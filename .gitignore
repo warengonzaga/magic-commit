@@ -1,11 +1,16 @@
 ## node
 node_modules
 
-## yarn
+## npm and yarn
+npm-debug.log
+npm-debug.log.*
 yarn-error.log
+yarn-debug.log
 
 ## build
 dist
+*.tgz
 
 ## env
 .env
+.env.*

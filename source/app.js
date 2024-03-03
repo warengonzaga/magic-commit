@@ -2,7 +2,7 @@ import React from 'react';
 import {Text} from 'ink';
 import BigText from 'ink-big-text';
 import Gradient from 'ink-gradient';
-import getGitDiff from './utils/openai.js';
+// import getGitDiff from './utils/openai.js';
 import info from './utils/info.js';
 
 export default function App() {
