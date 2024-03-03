@@ -1,25 +1,39 @@
 {
 	"name": "magicc",
-	"version": "0.0.0",
-	"license": "MIT",
+	"version": "0.1.0",
+	"author": "Waren Gonzaga",
+	"description": "You can do `magicc`, you can build anything that you desire.",
+	"keywords": [
+		"magicc",
+		"openai",
+		"git",
+		"commit",
+		"tool",
+		"ai",
+		"cli"
+	],
+	"license": "GPL-3.0",
 	"bin": "dist/cli.js",
 	"type": "module",
 	"engines": {
-		"node": ">=16"
+		"node": ">=18"
 	},
 	"scripts": {
 		"build": "babel --out-dir=dist source",
 		"dev": "babel --out-dir=dist --watch source",
+		"clean": "rm -rf dist",
 		"test": "prettier --check . && xo && ava"
 	},
 	"files": [
 		"dist"
 	],
 	"dependencies": {
+		"dotenv": "^16.4.5",
 		"ink": "^4.1.0",
 		"ink-big-text": "^2.0.0",
 		"ink-gradient": "^3.0.0",
 		"meow": "^11.0.0",
+		"openai": "^4.28.4",
 		"react": "^18.2.0"
 	},
 	"devDependencies": {
@@ -27,6 +41,7 @@
 		"@babel/preset-react": "^7.18.6",
 		"@vdemedes/prettier-config": "^2.0.1",
 		"ava": "^5.2.0",
+		"babel-plugin-inline-json-import": "^0.3.2",
 		"chalk": "^5.2.0",
 		"eslint-config-xo-react": "^0.27.0",
 		"eslint-plugin-react": "^7.32.2",
@@ -55,6 +70,9 @@
 	"babel": {
 		"presets": [
 			"@babel/preset-react"
+		],
+		"plugins": [
+			"inline-json-import"
 		]
 	}
 }
