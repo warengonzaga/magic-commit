@@ -2,7 +2,7 @@
 
 [![maintainer](https://img.shields.io/badge/maintainer-Waren%20Gonzaga-016eea.svg?logo=github&labelColor=181717&longCache=true&style=flat-square)](https://warengonzaga.com) [![made in](https://img.shields.io/badge/made%20in-Open%20Source%20Software%20PH-0060a0.svg?logo=github&longCache=true&labelColor=181717&style=flat-square)](https://github.com/ossphilippines) [![sponsors](https://img.shields.io/badge/sponsor-%E2%9D%A4-%23db61a2.svg?&logo=github&logoColor=white&labelColor=181717&style=flat-square)](https://github.com/sponsors/warengonzaga) [![release](https://img.shields.io/github/release/warengonzaga/magic-commit.svg?logo=github&labelColor=181717&color=green&style=flat-square)](https://github.com/warengonzaga/magic-commit/releases) [![star](https://img.shields.io/github/stars/warengonzaga/magic-commit.svg?&logo=github&labelColor=181717&color=yellow&style=flat-square)](https://github.com/warengonzaga/magic-commit/stargazers) [![license](https://img.shields.io/github/license/warengonzaga/magic-commit.svg?&logo=github&labelColor=181717&style=flat-square)](https://github.com/warengonzaga/magic-commit/blob/main/license)
 
-[![banner](https://raw.githubusercontent.com/warengonzaga/magic-commit/main/.github/assets/repo_banner.jpg)](https://github.com/warengonzaga/magic-commit)
+[![banner](.github/assets/repo_banner.jpg)](https://github.com/warengonzaga/magic-commit)
 
 You can do `magicc`, you can build anything that you desire. 🪄🔮💻
 
