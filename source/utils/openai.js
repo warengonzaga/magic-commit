@@ -1,11 +1,10 @@
 import execa from 'execa';
 import OpenAI from 'openai';
-import dotenv from 'dotenv';
 import config from './config.json';
+import { getOpenAIKey } from './api.js';
+import dotenv from 'dotenv';
 
 dotenv.config();
-
-const openai = new OpenAI(process.env.OPENAI_API_KEY);
 
 // remove any staged changes in git
 async function initGit() {
@@ -51,6 +50,8 @@ async function gitDiff() {
 }
 
 async function generatePrompt() {
+	const apiKey = await getOpenAIKey();
+	const openai = new OpenAI({apiKey: apiKey});
 	// get the staged changes
 	await initGit();
 	await gitStatus();
