@@ -28,6 +28,7 @@
 		"dist"
 	],
 	"dependencies": {
+		"conf": "^12.0.0",
 		"dotenv": "^16.4.5",
 		"ink": "^4.1.0",
 		"ink-big-text": "^2.0.0",
