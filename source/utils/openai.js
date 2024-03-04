@@ -33,6 +33,9 @@ async function gitStatus() {
 			// git add the first file in the list of changes
 			await execa('git', ['add', filePaths[0]]);
 			console.log(`${filePaths[0]} has been added to the staging area.`);
+		} else {
+			console.log('No changes to commit.');
+			return false;
 		}
 	} catch (error) {
 		console.error(error);
@@ -60,20 +63,25 @@ async function generatePrompt() {
 	// use the prompt from the config file emoji and send to openai
 	const category = await openai.chat.completions.create({
 		messages: [
-			{role: "system", content: config.emoji},
-			{role: "user", content: gitDiffContent},
+			{ role: "system", content: config.emoji },
+			{ role: "user", content: gitDiffContent },
 		],
-		model: "gpt-3.5-turbo"
+		model: "gpt-3.5-turbo",
 	});
 	// use the prmopt from the config file message and send to openai
 	const message = await openai.chat.completions.create({
 		messages: [
-			{role: "system", content: config.message},
-			{role: "user", content: gitDiffContent},
+			{ role: "system", content: config.message },
+			{ role: "user", content: gitDiffContent },
 		],
-		model: "gpt-3.5-turbo"
+		model: "gpt-3.5-turbo",
 	});
-	return `${category.choices[0].message.content}: ${message.choices[0].message.content}`;
+
+	if (await gitStatus() !== false) {
+		return `${category.choices[0].message.content}: ${message.choices[0].message.content}`;
+	} else {
+		return false;
+	}
 }
 
 export default generatePrompt;
