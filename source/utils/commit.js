@@ -1,5 +1,5 @@
 import generatePrompt from "./openai.js";
-import execa from 'execa';
+import {execa} from 'execa';
 import readline from "readline";
 
 async function askForCommitMessage() {
