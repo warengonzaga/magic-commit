@@ -2,6 +2,8 @@ import React from 'react';
 import {Text, Newline} from 'ink';
 import BigText from 'ink-big-text';
 import Gradient from 'ink-gradient';
+import isGit from 'is-git-repository';
+import isCommitterSet from './utils/errors.js';
 import info from './utils/info.js';
 import askForCommitMessage from './utils/commit.js';
 import { getOpenAIKey, setOpenAIKey, deleteOPenAIKey } from './utils/api.js';
@@ -19,7 +21,13 @@ export default function App({flags}) {
 		console.log('Run `magicc --setopenai=<api-key>` to save your API key and try again.');
 	} else {
 		console.log('You have an OpenAI API key, you can now generate a commit message.');
-		askForCommitMessage();
+		const gitCheck = isGit();
+		const committerCheck = isCommitterSet();
+		if (gitCheck && committerCheck) {
+			askForCommitMessage();
+		} else {
+			console.log('This is not a git repository.');
+		}
 	}
 	return (
 		<>
