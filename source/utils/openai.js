@@ -1,4 +1,4 @@
-import execa from 'execa';
+import {execa} from 'execa';
 import OpenAI from 'openai';
 import config from './config.json';
 import { getOpenAIKey } from './api.js';
