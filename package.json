@@ -1,6 +1,6 @@
 {
 	"name": "magicc",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"author": "Waren Gonzaga",
 	"description": "You can do `magicc`, you can build anything that you desire.",
 	"keywords": [
@@ -30,6 +30,7 @@
 	"dependencies": {
 		"conf": "^12.0.0",
 		"dotenv": "^16.4.5",
+		"execa": "^8.0.1",
 		"ink": "^4.1.0",
 		"ink-big-text": "^2.0.0",
 		"ink-gradient": "^3.0.0",
