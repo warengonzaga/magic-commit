@@ -11,6 +11,10 @@ Have suggestions in mind? [Let me know!](https://github.com/warengonzaga/magic-c
 > [!IMPORTANT]  
 > This project is still in it's early stage so expect some bugs and issues. Please report any issues you encounter. Thank you! 🙏
 
+## 😎 Demo
+
+[![demo](https://raw.githubusercontent.com/warengonzaga/magic-commit/main/.github/assets/demo.gif)](https://github.com/warengonzaga/magic-commit)
+
 ## 🕹️ Usage
 
 Save all of your changes and after that run the following command:
