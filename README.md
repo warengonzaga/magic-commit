@@ -64,6 +64,10 @@ This project is inspired by the following projects:
 Auto-generate impressive commits with AI in 1 second.
 - [tgpt](https://github.com/aandrew-me/tgpt) - AI Chatbots in terminal without needing API keys.
 
+## ⚙️ Project Activity
+
+![activity](https://repobeats.axiom.co/api/embed/b89d4c52ac63656f8148143516edd0db0d85788d.svg "Repobeats analytics image")
+
 ## 🎯 Contributing
 
 Contributions are welcome, create a pull request to this repo and I will review your code. Please consider to submit your pull request to the `dev` branch. Thank you!
