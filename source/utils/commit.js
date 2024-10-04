@@ -11,7 +11,7 @@ async function askForCommitMessage() {
   });
 
   if (prompt) {
-    rl.question(`Suggested commit message: ${prompt}\nDo you want to proceed? (y/n) `, (answer) => {
+    rl.question(`Suggested commit message: ${prompt}\nDo you want to proceed? (y/N) `, (answer) => {
       if (answer.toLowerCase() === "y") {
         execa("git", ["commit", "-m", prompt])
           .then(() => {
