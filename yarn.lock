@@ -2795,6 +2795,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"figures@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "figures@npm:6.1.0"
+  dependencies:
+    is-unicode-supported: "npm:^2.0.0"
+  checksum: 10c0/9159df4264d62ef447a3931537de92f5012210cf5135c35c010df50a2169377581378149abfe1eb238bd6acbba1c0d547b1f18e0af6eee49e30363cedaffcfe4
+  languageName: node
+  linkType: hard
+
 "file-entry-cache@npm:^6.0.1":
   version: 6.0.1
   resolution: "file-entry-cache@npm:6.0.1"
@@ -3486,6 +3495,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ink-select-input@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "ink-select-input@npm:6.0.0"
+  dependencies:
+    figures: "npm:^6.1.0"
+    lodash.isequal: "npm:^4.5.0"
+    to-rotated: "npm:^1.0.0"
+  peerDependencies:
+    ink: ">=5.0.0"
+    react: ">=18.0.0"
+  checksum: 10c0/6e2422dda13d2c5e29cb2f46b401949884c7e6c179eb8908cb8e558cf859c3e0af6aee603dc700e609a759c976bff2198442348d4c6695db3a34d454d7e63c3f
+  languageName: node
+  linkType: hard
+
 "ink-testing-library@npm:^3.0.0":
   version: 3.0.0
   resolution: "ink-testing-library@npm:3.0.0"
@@ -4030,6 +4053,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"is-unicode-supported@npm:^2.0.0":
+  version: 2.1.0
+  resolution: "is-unicode-supported@npm:2.1.0"
+  checksum: 10c0/a0f53e9a7c1fdbcf2d2ef6e40d4736fdffff1c9f8944c75e15425118ff3610172c87bf7bc6c34d3903b04be59790bb2212ddbe21ee65b5a97030fc50370545a5
+  languageName: node
+  linkType: hard
+
 "is-upper-case@npm:^2.0.2":
   version: 2.0.2
   resolution: "is-upper-case@npm:2.0.2"
@@ -4354,6 +4384,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash.isequal@npm:^4.5.0":
+  version: 4.5.0
+  resolution: "lodash.isequal@npm:4.5.0"
+  checksum: 10c0/dfdb2356db19631a4b445d5f37868a095e2402292d59539a987f134a8778c62a2810c2452d11ae9e6dcac71fc9de40a6fedcb20e2952a15b431ad8b29e50e28f
+  languageName: node
+  linkType: hard
+
 "lodash.merge@npm:^4.6.2":
   version: 4.6.2
   resolution: "lodash.merge@npm:4.6.2"
@@ -4448,6 +4485,7 @@ __metadata:
     ink: "npm:^4.1.0"
     ink-big-text: "npm:^2.0.0"
     ink-gradient: "npm:^3.0.0"
+    ink-select-input: "npm:^6.0.0"
     ink-testing-library: "npm:^3.0.0"
     is-git-repository: "npm:^2.0.0"
     meow: "npm:^11.0.0"
@@ -6350,6 +6388,13 @@ __metadata:
   dependencies:
     is-number: "npm:^7.0.0"
   checksum: 10c0/487988b0a19c654ff3e1961b87f471702e708fa8a8dd02a298ef16da7206692e8552a0250e8b3e8759270f62e9d8314616f6da274734d3b558b1fc7b7724e892
+  languageName: node
+  linkType: hard
+
+"to-rotated@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "to-rotated@npm:1.0.0"
+  checksum: 10c0/1a1f4625e94c4ba24340efb2362b2030e294f28d1c358578e6f68b298d34e062a9ab0c37f43a7ce12815e831f8df208bef1945f16f0a29ace73370903d796b28
   languageName: node
   linkType: hard
 
