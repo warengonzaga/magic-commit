@@ -14,6 +14,25 @@ There are many ways to contribute to this open source project. Any contributions
 
 If you can write a code then create a pull request to this repo and I will review your code. Please consider to submit your pull request to the ```dev``` branch. I will auto reject if you submit your pull request to the ```main``` branch.
 
+#### 🔧 Setup
+
+**To install the CLI app** in your working directory, you can run the following command:
+
+```bash
+yarn setup
+```
+
+OR
+
+```bash
+npm run setup
+```
+
+Run the command everytime you make changes to the code. This will build the project and install the CLI app in your working directory. So you can test it out using `magicc` command.
+
+> [!IMPORTANT]  
+> When using the setup command please ensure you are using linux-based OS. This command will use commands tht are only available in linux-based OS. Such as `rm -rf` to delete the `dist` folder.
+
 ### 📖 Documentation
 
 (coming soon)
