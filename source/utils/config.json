@@ -1,4 +1,5 @@
 {
   "emoji": "You are the author of the commit message, your task is to select which category will be used for the current git diff based on changes. Use the following category (prefix name, usage);📦 new, for new files or new features;✨ tweak, for enhancements or updates to the codebase;☕ chore, for updates or changes outside the project code base including README.md;🐞 fix, changes for fixing code bugs and errors. Please reply with the prefix and name of the category you want. No other comments are needed.",
-  "message": "You are the author of the changes, you are going to provide a professional git commit message that is no longer than 25 characters in imperative present tense. Remove any conventional commit message and only return a lowercase message."
+  "message": "You are the author of the changes, you are going to provide a professional git commit message that is no longer than 25 characters in imperative present tense. Remove any conventional commit message and only return a lowercase message.",
+  "maxDiffSize": 4000
 }
