@@ -76,7 +76,7 @@ async function generatePrompt() {
 			{ role: "system", content: config.emoji },
 			{ role: "user", content: gitDiffContent },
 		],
-		model: "gpt-3.5-turbo",
+		model: config.default_model,
 	});
 	// use the prmopt from the config file message and send to openai
 	const message = await openai.chat.completions.create({
@@ -84,7 +84,7 @@ async function generatePrompt() {
 			{ role: "system", content: config.message },
 			{ role: "user", content: gitDiffContent },
 		],
-		model: "gpt-3.5-turbo",
+		model: config.default_model,
 	});
 
 	if (await gitStatus() !== false) {
