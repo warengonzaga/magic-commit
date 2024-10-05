@@ -13,7 +13,7 @@ async function askForCommitMessage() {
 		output: process.stdout,
 	});
 
-	const Demo = () => {
+	const SelectSuggestedCommit = () => {
 		const {exit} = useApp();
 		const handleSelect = item => {
 			if (item.value) {
@@ -24,11 +24,11 @@ async function askForCommitMessage() {
 					.catch(error => {
 						console.error('Failed to commit changes:', error);
 					});
-				
-			} else {
+			} 
+			else {
 				console.log('Changes not committed.');
 			}
-      exit();
+			exit();
 		};
 
 		const items = [
@@ -45,13 +45,13 @@ async function askForCommitMessage() {
 		return (
 			<Box flexDirection="column">
 				<Text>{`Suggested commit message: ${prompt}\nDo you want to proceed?`}</Text>
-				<SelectInput items={items} onSelect={handleSelect} />
+				<SelectInput initialIndex={1} items={items} onSelect={handleSelect} />
 			</Box>
 		);
 	};
-
+	
 	if (prompt) {
-		render(<Demo />);
+		render(<SelectSuggestedCommit />);
 	} else {
 		console.log('No changes to commit...');
 		rl.close();
