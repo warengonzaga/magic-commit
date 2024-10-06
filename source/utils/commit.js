@@ -1,35 +1,61 @@
-import generatePrompt from "./openai.js";
+import generatePrompt from './openai.js';
 import {execa} from 'execa';
-import readline from "readline";
+import readline from 'readline';
+import React from 'react';
+import {Box, render, Text, useApp} from 'ink';
+import SelectInput from 'ink-select-input';
 
 async function askForCommitMessage() {
-  const prompt = await generatePrompt();
+	const prompt = await generatePrompt();
 
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
+	const rl = readline.createInterface({
+		input: process.stdin,
+		output: process.stdout,
+	});
 
-  if (prompt) {
-    rl.question(`Suggested commit message: ${prompt}\nDo you want to proceed? (y/N) `, (answer) => {
-      if (answer.toLowerCase() === "y") {
-        execa("git", ["commit", "-m", prompt])
-          .then(() => {
-            console.log("Changes committed successfully!");
-          })
-          .catch((error) => {
-            console.error("Failed to commit changes:", error);
-          });
-      } else {
-        console.log("Changes not committed.");
-      }
+	const SelectSuggestedCommit = () => {
+		const {exit} = useApp();
+		const handleSelect = item => {
+			if (item.value) {
+				execa('git', ['commit', '-m', prompt])
+					.then(() => {
+						console.log('Changes committed successfully!');
+					})
+					.catch(error => {
+						console.error('Failed to commit changes:', error);
+					});
+			} 
+			else {
+				console.log('Changes not committed.');
+			}
+			exit();
+		};
 
-      rl.close();
-    });
-  } else {
-    console.log("No changes to commit...");
-    rl.close();
-  }
+		const items = [
+			{
+				label: 'No',
+				value: false,
+			},
+			{
+				label: 'Yes',
+				value: true,
+			},
+		];
+
+		return (
+			<Box flexDirection="column">
+				<Text>{`Suggested commit message: ${prompt}\nDo you want to proceed?`}</Text>
+				<SelectInput items={items} onSelect={handleSelect} />
+			</Box>
+		);
+	};
+	
+	if (prompt) {
+		render(<SelectSuggestedCommit />);
+	} else {
+		console.log('No changes to commit...');
+		rl.close();
+	}
 }
 
 export default askForCommitMessage;
