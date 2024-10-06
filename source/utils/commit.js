@@ -33,19 +33,19 @@ async function askForCommitMessage() {
 
 		const items = [
 			{
-				label: 'Yes',
-				value: true,
-			},
-			{
 				label: 'No',
 				value: false,
+			},
+			{
+				label: 'Yes',
+				value: true,
 			},
 		];
 
 		return (
 			<Box flexDirection="column">
 				<Text>{`Suggested commit message: ${prompt}\nDo you want to proceed?`}</Text>
-				<SelectInput initialIndex={1} items={items} onSelect={handleSelect} />
+				<SelectInput items={items} onSelect={handleSelect} />
 			</Box>
 		);
 	};
