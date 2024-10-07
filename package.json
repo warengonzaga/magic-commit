@@ -38,6 +38,7 @@
 		"ink": "^4.1.0",
 		"ink-big-text": "^2.0.0",
 		"ink-gradient": "^3.0.0",
+		"ink-select-input": "^6.0.0",
 		"is-git-repository": "^2.0.0",
 		"magicc": "^0.2.1",
 		"meow": "^11.0.0",
