@@ -24,6 +24,7 @@
 		"clean": "rm -rf",
 		"setup": "npm run setup:ubuntu",
 		"setup:ubuntu": "npm run clean && npm run build && npm i -g .",
+		"setup:windows":"rmdir /s /q dist && yarn build",
 		"reset": "npm run reset:ubuntu",
 		"reset:ubuntu": "npm uninstall -g magicc && npm run setup:ubuntu",
 		"test": "prettier --check . && xo && ava"
