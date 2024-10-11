@@ -67,7 +67,7 @@ async function generatePrompt() {
 
 	if (gitDiffContent.length > maxDiffSize) {
 		console.log('Diff content is too large. Skipping OpenAI request.');
-		return `✨ tweak: update ${firstFilePath}`;
+		return `✨ tweak (${firstFilePath}): update ${firstFilePath}`;
 	}
 
 	// use the prompt from the config file emoji and send to openai
@@ -88,7 +88,7 @@ async function generatePrompt() {
 	});
 
 	if (await gitStatus() !== false) {
-		return `${category.choices[0].message.content}: ${message.choices[0].message.content}`;
+		return `${category.choices[0].message.content} (${firstFilePath}): ${message.choices[0].message.content}`;
 	} else {
 		return false;
 	}

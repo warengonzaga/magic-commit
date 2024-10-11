@@ -1,13 +1,15 @@
 {
 	"name": "magicc",
-	"version": "0.2.1",
+	"version": "0.2.5",
 	"author": "Waren Gonzaga",
 	"description": "You can do `magicc`, you can build anything that you desire.",
 	"keywords": [
+		"magic",
 		"magicc",
 		"openai",
 		"git",
 		"commit",
+		"message",
 		"tool",
 		"ai",
 		"cli"
@@ -21,11 +23,14 @@
 	"scripts": {
 		"build": "babel --out-dir=dist source",
 		"dev": "babel --out-dir=dist --watch source",
-		"clean": "rm -rf dist",
-		"setup": "npm run setup:ubuntu",
-		"setup:ubuntu": "npm run clean && npm run build && npm i -g .",
-		"reset": "npm run reset:ubuntu",
-		"reset:ubuntu": "npm uninstall -g magicc && npm run setup:ubuntu",
+		"clean":"npm run clean:linux",
+		"clean:linux": "rm -rf dist",
+    "clean:windows": "rmdir /s /q dist",
+		"setup": "npm run setup:linux",
+		"setup:linux": "npm run clean:linux && npm run build && npm i -g .",
+		"setup:windows":"npm run clean:windows && npm run build",
+		"reset": "npm run reset:linux",
+		"reset:linux": "npm uninstall -g magicc && npm run setup:linux",
 		"test": "prettier --check . && xo && ava"
 	},
 	"files": [
@@ -38,6 +43,7 @@
 		"ink": "^4.1.0",
 		"ink-big-text": "^2.0.0",
 		"ink-gradient": "^3.0.0",
+		"ink-select-input": "^6.0.0",
 		"is-git-repository": "^2.0.0",
 		"meow": "^11.0.0",
 		"openai": "^4.28.4",
