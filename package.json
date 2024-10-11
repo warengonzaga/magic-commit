@@ -21,7 +21,7 @@
 	"scripts": {
 		"build": "babel --out-dir=dist source",
 		"dev": "babel --out-dir=dist --watch source",
-		"clean": "rmdir /s /q dist",
+		"clean": "rm -rf",
 		"setup": "npm run setup:ubuntu",
 		"setup:ubuntu": "npm run clean && npm run build && npm i -g .",
 		"reset": "npm run reset:ubuntu",
