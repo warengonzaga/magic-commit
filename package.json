@@ -21,10 +21,11 @@
 	"scripts": {
 		"build": "babel --out-dir=dist source",
 		"dev": "babel --out-dir=dist --watch source",
-		"clean": "rm -rf",
-		"setup": "npm run setup:ubuntu",
-		"setup:ubuntu": "npm run clean && npm run build && npm i -g .",
-		"setup:windows":"rmdir /s /q dist && yarn build",
+        "clean:ubuntu": "rm -rf dist",
+        "clean:windows": "rmdir /s /q dist",
+		"setup": "npm run setup:ubuntu || npm run setup:windows",
+		"setup:ubuntu": "npm run clean:ubuntu && npm run build && npm i -g .",
+		"setup:windows":"npm run clean:windows && npm run build",
 		"reset": "npm run reset:ubuntu",
 		"reset:ubuntu": "npm uninstall -g magicc && npm run setup:ubuntu",
 		"test": "prettier --check . && xo && ava"
