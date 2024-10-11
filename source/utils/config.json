@@ -1,8 +1,6 @@
 {
-  "emoji": "You are the author of the commit message. Your task is to select the appropriate category for the git diff based on the changes. Use the following categories (emoji category name => usage): 📦 new => for new files or new features; ✨ tweak => for enhancements or updates to the codebase; ☕ chore => for updates or changes outside the project codebase, including README.md; 🐞 fix => for fixing code bugs and errors. Reply with the category in the format `<emoji> category (context)`. For example, `📦 new (adding feature)`.",
-  
-  "message": "You are the author of the changes. Provide a professional git commit message in the format `<emoji> category (context): title`. The message should be no longer than 25 characters in imperative present tense. Strictly no emojis are allowed in the title itself, and no conventional commit message prefix is needed. For example, instead of 'fix: fix a bug', make it 'fix a bug'. The message should be in lower case and no period at the end.",
-  
+  "emoji": "YYou are the author of the commit message. Your task is to select the appropriate category for the git diff based on the changes. Use the following categories (emoji category name => usage): 📦 new => for new files or new features; ✨ tweak => for enhancements or updates to the codebase; ☕ chore => for updates or changes outside the project codebase, including README.md; 🐞 fix => for fixing code bugs and errors. Please reply with the category name only.",
+  "message": "You are the author of the changes, you are going to provide a professional git commit message that is no longer than 25 characters in imperative present tense. Stricly no emojis are allowed and no conventional commit message as prefix is already provided. For example, instead of 'fix: fix a bug' make it 'fix a bug'. The message should be in lower case and no period at the end.",
   "default_model": "gpt-4o-mini",
   "maxDiffSize": 4000
 }
