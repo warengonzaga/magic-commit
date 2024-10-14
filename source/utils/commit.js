@@ -5,7 +5,7 @@ import React from 'react';
 import info from './info.js';
 import BigText from 'ink-big-text';
 import Gradient from 'ink-gradient';
-import {Box, render, Text, useApp,Newline} from 'ink';
+import {Box, render, Text, useApp, Newline} from 'ink';
 import SelectInput from 'ink-select-input';
 
 async function askForCommitMessage() {
@@ -27,8 +27,7 @@ async function askForCommitMessage() {
 					.catch(error => {
 						console.error('Failed to commit changes:', error);
 					});
-			} 
-			else {
+			} else {
 				console.log('Changes not committed.');
 			}
 			exit();
@@ -47,27 +46,30 @@ async function askForCommitMessage() {
 
 		return (
 			<>
-			<Gradient name='passion'>
-				<BigText text='Magicc' />
-				<Text>You can do `magicc`, you can build anything that you desire. 🪄</Text>
-			</Gradient>
-			<Text>
-				Version: <Text color='green'>{info('version')}</Text> | 
-				Author: <Text color='blue'>{info('author')}</Text><Newline/>
+				<Gradient name="passion">
+					<BigText text="Magicc" />
+					<Text>
+						You can do `magicc`, you can build anything that you desire. 🪄
+					</Text>
+				</Gradient>
 				<Text>
-					Need Help? <Text color="cyan">magicc --help</Text>
-				</Text><Newline/>
-				==================================================
-			</Text>
-			<Box flexDirection="column">
-				<Text>{`Suggested commit message: ${prompt}\nDo you want to proceed?`}</Text>
-				<SelectInput items={items} onSelect={handleSelect} />
-			</Box>
-		</>
-			
+					Version: <Text color="green">{info('version')}</Text> | Author:{' '}
+					<Text color="blue">{info('author')}</Text>
+					<Newline />
+					<Text>
+						Need Help? <Text color="cyan">magicc --help</Text>
+					</Text>
+					<Newline />
+					==================================================
+				</Text>
+				<Box flexDirection="column">
+					<Text>{`Suggested commit message: ${prompt}\nDo you want to proceed?`}</Text>
+					<SelectInput items={items} onSelect={handleSelect} />
+				</Box>
+			</>
 		);
 	};
-	
+
 	if (prompt) {
 		render(<SelectSuggestedCommit />);
 	} else {
