@@ -2,11 +2,9 @@ import generatePrompt from './openai.js';
 import {execa} from 'execa';
 import readline from 'readline';
 import React from 'react';
-import info from './info.js';
-import BigText from 'ink-big-text';
-import Gradient from 'ink-gradient';
-import {Box, render, Text, useApp, Newline} from 'ink';
+import {Box, render, Text, useApp} from 'ink';
 import SelectInput from 'ink-select-input';
+import Logo from './logo.js';
 
 async function askForCommitMessage() {
 	const prompt = await generatePrompt();
@@ -45,28 +43,12 @@ async function askForCommitMessage() {
 		];
 
 		return (
-			<>
-				<Gradient name="passion">
-					<BigText text="Magicc" />
-					<Text>
-						You can do `magicc`, you can build anything that you desire. 🪄
-					</Text>
-				</Gradient>
-				<Text>
-					Version: <Text color="green">{info('version')}</Text> | Author:{' '}
-					<Text color="blue">{info('author')}</Text>
-					<Newline />
-					<Text>
-						Need Help? <Text color="cyan">magicc --help</Text>
-					</Text>
-					<Newline />
-					==================================================
-				</Text>
+			<Logo>
 				<Box flexDirection="column">
 					<Text>{`Suggested commit message: ${prompt}\nDo you want to proceed?`}</Text>
 					<SelectInput items={items} onSelect={handleSelect} />
 				</Box>
-			</>
+			</Logo>
 		);
 	};
 
