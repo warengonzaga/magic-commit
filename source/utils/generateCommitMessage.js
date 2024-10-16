@@ -1,5 +1,5 @@
-import openAiModel from './openai.js';
-import ollamaModel from './ollama.js';
+import openAiModel from '../models/openai.js';
+import ollamaModel from '../models/ollama.js';
 import config from './config.json';
 import {gitDiff, gitStatus, initGit} from './commit.js';
 
