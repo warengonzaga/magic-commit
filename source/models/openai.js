@@ -1,8 +1,8 @@
 import OpenAI from 'openai';
-import config from './config.json';
+import config from '../utils/config.json';
 import dotenv from 'dotenv';
 
-import {getOpenAIKey, setOpenAIKey, deleteOPenAIKey} from './api.js';
+import {getOpenAIKey, setOpenAIKey, deleteOPenAIKey} from '../utils/api.js';
 
 dotenv.config();
 

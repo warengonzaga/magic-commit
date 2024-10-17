@@ -1,5 +1,5 @@
 import Ollama from 'ollama'; // Import the Ollama model
-import config from './config.json';
+import config from '../utils/config.json';
 
 async function ollamaModel(model, flags, diffContent) {
 	try {
