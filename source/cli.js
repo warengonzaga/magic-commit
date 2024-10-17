@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 import React from 'react';
-import {render} from 'ink';
 import meow from 'meow';
 import App from './app.js';
+import Logo from './utils/logo.js';
+import { render } from 'ink';
+
+render(<Logo />, {patchConsole: false});
 
 const cli = meow(
-	`
-		Usage
+	`Usage
 			$ magicc
 
 		Options
@@ -33,4 +35,4 @@ const cli = meow(
 	},
 );
 
-render(<App flags={cli.flags}/>);
+render(<App flags={cli.flags} />, {patchConsole: false});
