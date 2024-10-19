@@ -4,6 +4,7 @@ import readline from 'readline';
 import React from 'react';
 import {Box, render, Text, useApp} from 'ink';
 import SelectInput from 'ink-select-input';
+import Logo from './logo.js';
 
 async function askForCommitMessage() {
 	const prompt = await generatePrompt();
@@ -24,8 +25,7 @@ async function askForCommitMessage() {
 					.catch(error => {
 						console.error('Failed to commit changes:', error);
 					});
-			} 
-			else {
+			} else {
 				console.log('Changes not committed.');
 			}
 			exit();
@@ -43,13 +43,15 @@ async function askForCommitMessage() {
 		];
 
 		return (
-			<Box flexDirection="column">
-				<Text>{`Suggested commit message: ${prompt}\nDo you want to proceed?`}</Text>
-				<SelectInput items={items} onSelect={handleSelect} />
-			</Box>
+			<Logo>
+				<Box flexDirection="column">
+					<Text>{`Suggested commit message: ${prompt}\nDo you want to proceed?`}</Text>
+					<SelectInput items={items} onSelect={handleSelect} />
+				</Box>
+			</Logo>
 		);
 	};
-	
+
 	if (prompt) {
 		render(<SelectSuggestedCommit />);
 	} else {
