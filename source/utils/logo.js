@@ -3,8 +3,9 @@ import info from './info.js';
 import BigText from 'ink-big-text';
 import Gradient from 'ink-gradient';
 import {Text, Newline} from 'ink';
+import ModelSelection from './modelSelection.js';
 
-export default function Logo({children}) {
+export default function Logo(children) {
 	return (
 		<>
 			<Gradient name="passion">
@@ -23,7 +24,8 @@ export default function Logo({children}) {
 				<Newline />
 				==================================================
 			</Text>
-			{children}
+			<ModelSelection {...children} />
+
 		</>
 	);
 }
