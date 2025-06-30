@@ -2515,13 +2515,12 @@ ink-gradient@^3.0.0:
     prop-types "^15.8.1"
     strip-ansi "^7.1.0"
 
-ink-select-input@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/ink-select-input/-/ink-select-input-6.0.0.tgz#b6192ee6c397a7e8b5cfdcafcd833885cf100579"
-  integrity sha512-2mCbn1b9xeguA3qJiaf8Sx8W4MM005wACcLKwHWWJmJ8BapjsahmQPuY2U2qyGc817IdWFjNk/K41Vn39UlO4Q==
+ink-select-input@^6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/ink-select-input/-/ink-select-input-6.2.0.tgz#c8114a5022a79aaa3e163c148e9bf72a0989b8af"
+  integrity sha512-304fZXxkpYxJ9si5lxRCaX01GNlmPBgOZumXXRnPYbHW/iI31cgQynqk2tRypGLOF1cMIwPUzL2LSm6q4I5rQQ==
   dependencies:
     figures "^6.1.0"
-    lodash.isequal "^4.5.0"
     to-rotated "^1.0.0"
 
 ink-testing-library@^3.0.0:
@@ -3128,11 +3127,6 @@ lodash-es@^4.17.21:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.21.tgz#43e626c46e6591b7750beb2b50117390c609e3ee"
   integrity sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==
-
-lodash.isequal@^4.5.0:
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/lodash.isequal/-/lodash.isequal-4.5.0.tgz#415c4478f2bcc30120c22ce10ed3226f7d3e18e0"
-  integrity sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==
 
 lodash.merge@^4.6.2:
   version "4.6.2"
