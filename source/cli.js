@@ -33,4 +33,4 @@ const cli = meow(
 	},
 );
 
-render(<App flags={cli.flags}/>);
+render(<App flags={cli.flags} />);
