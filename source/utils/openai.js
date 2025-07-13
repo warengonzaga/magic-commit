@@ -1,7 +1,7 @@
 import {execa} from 'execa';
 import OpenAI from 'openai';
 import config from './config.json';
-import { getOpenAIKey } from './api.js';
+import {getOpenAIKey} from './api.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -21,16 +21,17 @@ let firstFilePath = '';
 
 async function gitStatus() {
 	try {
-		const { stdout: status } = await execa('git', ['status', '--porcelain']);
+		const {stdout: status} = await execa('git', ['status', '--porcelain']);
 		if (status) {
 			// get the first file path in the list of changes
 			const lines = status.split('\n');
 			const filePaths = lines
 				.map(line => line.split(' ').slice(2).join(' ').trim())
 				.filter(filePath => filePath !== '')
-				.concat(lines
-					.filter(line => line.startsWith('??'))
-					.map(line => line.split(' ').slice(1).join(' ').trim())
+				.concat(
+					lines
+						.filter(line => line.startsWith('??'))
+						.map(line => line.split(' ').slice(1).join(' ').trim()),
 				);
 			// git add the first file in the list of changes
 			firstFilePath = filePaths[0];
@@ -48,7 +49,7 @@ async function gitStatus() {
 // get the diff of the staged changes
 async function gitDiff() {
 	try {
-		const { stdout: gitDiff } = await execa('git', ['diff', '--staged']);
+		const {stdout: gitDiff} = await execa('git', ['diff', '--staged']);
 		return gitDiff;
 	} catch (error) {
 		console.error(error);
@@ -73,21 +74,21 @@ async function generatePrompt() {
 	// use the prompt from the config file emoji and send to openai
 	const category = await openai.chat.completions.create({
 		messages: [
-			{ role: "system", content: config.emoji },
-			{ role: "user", content: gitDiffContent },
+			{role: 'system', content: config.emoji},
+			{role: 'user', content: gitDiffContent},
 		],
 		model: config.default_model,
 	});
 	// use the prmopt from the config file message and send to openai
 	const message = await openai.chat.completions.create({
 		messages: [
-			{ role: "system", content: config.message },
-			{ role: "user", content: gitDiffContent },
+			{role: 'system', content: config.message},
+			{role: 'user', content: gitDiffContent},
 		],
 		model: config.default_model,
 	});
 
-	if (await gitStatus() !== false) {
+	if ((await gitStatus()) !== false) {
 		return `${category.choices[0].message.content} (${firstFilePath}): ${message.choices[0].message.content}`;
 	} else {
 		return false;

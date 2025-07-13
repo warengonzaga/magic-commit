@@ -24,8 +24,7 @@ async function askForCommitMessage() {
 					.catch(error => {
 						console.error('Failed to commit changes:', error);
 					});
-			} 
-			else {
+			} else {
 				console.log('Changes not committed.');
 			}
 			exit();
@@ -49,7 +48,7 @@ async function askForCommitMessage() {
 			</Box>
 		);
 	};
-	
+
 	if (prompt) {
 		render(<SelectSuggestedCommit />);
 	} else {
