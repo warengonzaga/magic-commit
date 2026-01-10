@@ -25,7 +25,6 @@ export default function Logo(children) {
 				==================================================
 			</Text>
 			<ModelSelection {...children} />
-
 		</>
 	);
 }

@@ -3,7 +3,7 @@ import React from 'react';
 import meow from 'meow';
 import App from './app.js';
 import Logo from './utils/logo.js';
-import { render } from 'ink';
+import {render} from 'ink';
 
 render(<Logo />, {patchConsole: false});
 

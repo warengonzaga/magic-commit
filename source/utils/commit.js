@@ -109,5 +109,4 @@ export async function gitDiff() {
 	}
 }
 
-
 export default askForCommitMessage;
