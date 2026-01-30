@@ -15,7 +15,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm install
+      - run: yarn install --frozen-lockfile
 
   publish-npm:
     needs: build
@@ -26,7 +26,7 @@ jobs:
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org/
-      - run: npm install
-      - run: npm publish
+      - run: yarn install --frozen-lockfile
+      - run: yarn publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_ACCESS_TOKEN}}
