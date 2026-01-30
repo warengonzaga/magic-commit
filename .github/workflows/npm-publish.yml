@@ -27,6 +27,6 @@ jobs:
           node-version: 20
           registry-url: https://registry.npmjs.org/
       - run: yarn install --frozen-lockfile
-      - run: yarn publish
+      - run: yarn publish --non-interactive
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_ACCESS_TOKEN}}
