@@ -73,3 +73,12 @@ export function setUseGhCli(value) {
 export function getUseGhCli() {
 	return config.get('useGhCli', false);
 }
+
+// Convention management
+export function setConvention(convention = 'clean') {
+	config.set('convention', convention);
+}
+
+export function getConvention() {
+	return config.get('convention', 'clean'); // Default to 'clean'
+}

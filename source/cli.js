@@ -11,6 +11,8 @@ import {
 	logout,
 } from './commands/auth.js';
 import {showConfig, resetConfig} from './commands/config.js';
+import {setConvention, getConvention} from './utils/config-manager.js';
+import {showSuccess, showError} from './utils/ui.js';
 
 const program = new Command();
 
@@ -44,6 +46,10 @@ program
 	.option('--all', 'Process all files at once')
 	.option('--file <path>', 'Process specific file')
 	.option('--model <model>', 'Specify AI model (e.g., gpt-4, gpt-3.5-turbo)')
+	.option(
+		'--convention <type>',
+		'Commit convention (clean, conventional, gitmoji, simple)',
+	)
 	.action(options => {
 		commitCommand(options);
 	});
@@ -82,6 +88,21 @@ authCmd
 
 // Config command
 const configCmd = program.command('config').description('Manage configuration');
+
+configCmd
+	.command('set-convention <type>')
+	.description('Set default commit convention')
+	.action(type => {
+		const validConventions = ['clean', 'conventional', 'gitmoji', 'simple'];
+		if (!validConventions.includes(type)) {
+			showError(`Invalid convention: ${type}`);
+			console.log(`Available: ${validConventions.join(', ')}`);
+			process.exit(1);
+		}
+
+		setConvention(type);
+		showSuccess(`Default convention set to: ${type}`);
+	});
 
 configCmd
 	.option('--show', 'Show current configuration')

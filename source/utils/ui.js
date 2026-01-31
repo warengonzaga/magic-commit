@@ -1,6 +1,10 @@
 import chalk from 'chalk';
 import figlet from 'figlet';
 import inquirer from 'inquirer';
+import {
+	listConventions,
+	getConvention,
+} from '../utils/commit-conventions.js';
 
 /**
  * UI utilities for magic-commit terminal interface
@@ -32,8 +36,33 @@ export function showCommitPreview(message, filePath = null) {
 	console.log();
 }
 
-export async function confirmCommit(message, filePath = null) {
-	showCommitPreview(message, filePath);
+export async function promptConventionSelection() {
+	const answer = await inquirer.prompt([
+		{
+			type: 'list',
+			name: 'convention',
+			message: 'Select commit message convention:',
+			choices: listConventions(),
+		},
+	]);
+	return answer.convention;
+}
+
+export async function confirmCommit(
+	message,
+	filePath = null,
+	conventionName = 'clean',
+) {
+	const conv = getConvention(conventionName);
+
+	console.log(chalk.gray(`\n📋 Convention: ${conv.name}`));
+	console.log(chalk.yellow('📝 Suggested Commit Message:'));
+	console.log(chalk.white(message));
+	if (filePath) {
+		console.log(chalk.gray(`   File: ${filePath}`));
+	}
+
+	console.log();
 
 	const answer = await inquirer.prompt([
 		{
@@ -43,6 +72,7 @@ export async function confirmCommit(message, filePath = null) {
 			choices: [
 				{name: '✅ Accept and commit', value: 'accept'},
 				{name: '✏️  Edit message', value: 'edit'},
+				{name: '🔄 Regenerate with different convention', value: 'change-convention'},
 				{name: '⏭️  Skip this file', value: 'skip'},
 			],
 		},
@@ -58,6 +88,11 @@ export async function confirmCommit(message, filePath = null) {
 			},
 		]);
 		return {action: 'accept', message: edited.message};
+	}
+
+	if (answer.action === 'change-convention') {
+		const newConvention = await promptConventionSelection();
+		return {action: 'regenerate', convention: newConvention};
 	}
 
 	return {action: answer.action, message};

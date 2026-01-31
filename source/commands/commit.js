@@ -17,7 +17,7 @@ import {
 	showInfo,
 	confirmCommit,
 } from '../utils/ui.js';
-import {getAuthMode} from '../utils/config-manager.js';
+import {getAuthMode, getConvention} from '../utils/config-manager.js';
 
 /**
  * Main commit command logic
@@ -137,37 +137,47 @@ export async function processFilesInteractively(aiProvider, options = {}) {
 			continue;
 		}
 
-		// Generate commit message
-		try {
-			const message = await aiProvider.generateCommitMessage(
-				diff,
-				file,
-				options,
-			);
+		let currentConvention = options.convention || getConvention();
+		let fileProcessed = false;
 
-			// Confirm and commit
-			const result = await confirmCommit(message, file);
+		while (!fileProcessed) {
+			try {
+				const message = await aiProvider.generateCommitMessage(
+					diff,
+					file,
+					{...options, convention: currentConvention},
+				);
 
-			if (result.action === 'accept') {
-				const success = await commit(result.message);
-				if (success) {
-					showSuccess(`Committed: ${file}`);
-					console.log(`📝 ${result.message}`);
-					committed++;
-				} else {
-					showError(`Failed to commit ${file}`);
+				const result = await confirmCommit(message, file, currentConvention);
+
+				if (result.action === 'accept') {
+					const success = await commit(result.message);
+					if (success) {
+						showSuccess(`Committed: ${file}`);
+						console.log(`📝 ${result.message}`);
+						committed++;
+					} else {
+						showError(`Failed to commit ${file}`);
+						await unstageFile(file);
+						skipped++;
+					}
+
+					fileProcessed = true;
+				} else if (result.action === 'regenerate') {
+					currentConvention = result.convention;
+					// Loop continues to regenerate
+				} else if (result.action === 'skip') {
+					showInfo(`Skipped: ${file}`);
 					await unstageFile(file);
 					skipped++;
+					fileProcessed = true;
 				}
-			} else if (result.action === 'skip') {
-				showInfo(`Skipped: ${file}`);
+			} catch (error) {
+				showError(`Error processing ${file}: ${error.message}`);
 				await unstageFile(file);
 				skipped++;
+				fileProcessed = true;
 			}
-		} catch (error) {
-			showError(`Error processing ${file}: ${error.message}`);
-			await unstageFile(file);
-			skipped++;
 		}
 	}
 
@@ -199,27 +209,52 @@ export async function processFile(filePath, aiProvider, options = {}) {
 		return;
 	}
 
-	// Generate commit message
-	showInfo('Generating commit message...');
-	const message = await aiProvider.generateCommitMessage(
-		diff,
-		filePath,
-		options,
-	);
+	let currentConvention = options.convention || getConvention();
+	let attempts = 0;
+	const maxAttempts = 5;
 
-	// Confirm and commit
-	const result = await confirmCommit(message, filePath);
+	while (attempts < maxAttempts) {
+		showInfo('Generating commit message...');
 
-	if (result.action === 'accept') {
-		const success = await commit(result.message);
-		if (success) {
-			showSuccess('Changes committed successfully!');
-			console.log(`📝 ${result.message}`);
-		} else {
-			showError('Failed to commit changes.');
+		try {
+			const message = await aiProvider.generateCommitMessage(
+				diff,
+				filePath,
+				{...options, convention: currentConvention},
+			);
+
+			const result = await confirmCommit(message, filePath, currentConvention);
+
+			if (result.action === 'accept') {
+				const success = await commit(result.message);
+				if (success) {
+					showSuccess('Changes committed successfully!');
+					console.log(`📝 ${result.message}`);
+				} else {
+					showError('Failed to commit changes.');
+				}
+
+				return;
+			}
+
+			if (result.action === 'regenerate') {
+				currentConvention = result.convention;
+				attempts++;
+				continue;
+			}
+
+			if (result.action === 'skip') {
+				showInfo('Commit cancelled.');
+				await unstageFile(filePath);
+				return;
+			}
+		} catch (error) {
+			showError(`Error: ${error.message}`);
+			await unstageFile(filePath);
+			return;
 		}
-	} else if (result.action === 'skip') {
-		showInfo('Commit cancelled.');
-		await unstageFile(filePath);
 	}
+
+	showWarning('Maximum regeneration attempts reached.');
+	await unstageFile(filePath);
 }
