@@ -142,14 +142,14 @@ export async function processFilesInteractively(aiProvider, options = {}) {
 
 		while (!fileProcessed) {
 			try {
-				const message = await aiProvider.generateCommitMessage(
-					diff,
-					file,
-					{...options, convention: currentConvention},
-				);
+				const message = await aiProvider.generateCommitMessage(diff, file, {
+					...options,
+					convention: currentConvention,
+				});
 
 				const result = await confirmCommit(message, file, currentConvention);
 
+				// eslint-disable-next-line unicorn/prefer-switch
 				if (result.action === 'accept') {
 					const success = await commit(result.message);
 					if (success) {
@@ -190,6 +190,7 @@ export async function processFilesInteractively(aiProvider, options = {}) {
 }
 /* eslint-enable no-await-in-loop */
 
+/* eslint-disable no-await-in-loop */
 export async function processFile(filePath, aiProvider, options = {}) {
 	showInfo(`Processing single file: ${filePath}`);
 	console.log('');
@@ -217,11 +218,10 @@ export async function processFile(filePath, aiProvider, options = {}) {
 		showInfo('Generating commit message...');
 
 		try {
-			const message = await aiProvider.generateCommitMessage(
-				diff,
-				filePath,
-				{...options, convention: currentConvention},
-			);
+			const message = await aiProvider.generateCommitMessage(diff, filePath, {
+				...options,
+				convention: currentConvention,
+			});
 
 			const result = await confirmCommit(message, filePath, currentConvention);
 
@@ -258,3 +258,4 @@ export async function processFile(filePath, aiProvider, options = {}) {
 	showWarning('Maximum regeneration attempts reached.');
 	await unstageFile(filePath);
 }
+/* eslint-enable no-await-in-loop */

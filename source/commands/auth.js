@@ -1,5 +1,5 @@
-import {execa} from 'execa';
 import process from 'node:process';
+import {execa} from 'execa';
 import {
 	setAuthMode,
 	setToken,
@@ -19,7 +19,7 @@ import {
  * Handles GitHub Copilot and OpenAI authentication
  */
 
-export async function authenticateWithCopilot(token = null) {
+export async function authenticateWithCopilot() {
 	try {
 		console.log('🔐 Setting up GitHub Copilot authentication...\n');
 

@@ -1,10 +1,7 @@
 import chalk from 'chalk';
 import figlet from 'figlet';
 import inquirer from 'inquirer';
-import {
-	listConventions,
-	getConvention,
-} from '../utils/commit-conventions.js';
+import {listConventions, getConvention} from '../utils/commit-conventions.js';
 
 /**
  * UI utilities for magic-commit terminal interface
@@ -72,7 +69,10 @@ export async function confirmCommit(
 			choices: [
 				{name: '✅ Accept and commit', value: 'accept'},
 				{name: '✏️  Edit message', value: 'edit'},
-				{name: '🔄 Regenerate with different convention', value: 'change-convention'},
+				{
+					name: '🔄 Regenerate with different convention',
+					value: 'change-convention',
+				},
 				{name: '⏭️  Skip this file', value: 'skip'},
 			],
 		},

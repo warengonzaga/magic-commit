@@ -2,7 +2,10 @@ export const CONVENTIONS = {
 	clean: {
 		name: 'Clean Commit',
 		description: 'wgtechlabs Clean Commit format with emojis',
-		buildPrompt: (diff, filePath) => `You are an expert at writing git commit messages following the "Clean Commit" format.
+		buildPrompt: (
+			diff,
+			filePath,
+		) => `You are an expert at writing git commit messages following the "Clean Commit" format.
 
 **Clean Commit Format:**
 <emoji> <type>: <description>
@@ -40,7 +43,10 @@ Generate a single commit message following Clean Commit format. Return ONLY the 
 	conventional: {
 		name: 'Conventional Commits',
 		description: 'Standard Conventional Commits specification',
-		buildPrompt: (diff, filePath) => `You are an expert at writing git commit messages following the "Conventional Commits" specification.
+		buildPrompt: (
+			diff,
+			filePath,
+		) => `You are an expert at writing git commit messages following the "Conventional Commits" specification.
 
 **Format:**
 <type>(<scope>): <description>
@@ -76,7 +82,10 @@ Generate a single commit message following Conventional Commits format. Return O
 	gitmoji: {
 		name: 'Gitmoji',
 		description: 'Gitmoji commit convention with emojis',
-		buildPrompt: (diff, filePath) => `You are an expert at writing git commit messages using the "Gitmoji" convention.
+		buildPrompt: (
+			diff,
+			filePath,
+		) => `You are an expert at writing git commit messages using the "Gitmoji" convention.
 
 **Format:**
 :<emoji-code>: <description>
@@ -113,7 +122,10 @@ Generate a single commit message using Gitmoji format. Return ONLY the commit me
 	simple: {
 		name: 'Simple',
 		description: 'Plain descriptive commit messages',
-		buildPrompt: (diff, filePath) => `You are an expert at writing clear, concise git commit messages.
+		buildPrompt: (
+			diff,
+			filePath,
+		) => `You are an expert at writing clear, concise git commit messages.
 
 **Format:**
 Simple descriptive message in imperative mood

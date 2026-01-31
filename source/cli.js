@@ -2,7 +2,7 @@
 import process from 'node:process';
 import {Command} from 'commander';
 import packageJSON from '../package.json';
-import {showBanner, showWarning} from './utils/ui.js';
+import {showBanner, showWarning, showSuccess, showError} from './utils/ui.js';
 import {commitCommand} from './commands/commit.js';
 import {
 	authenticateWithCopilot,
@@ -11,8 +11,7 @@ import {
 	logout,
 } from './commands/auth.js';
 import {showConfig, resetConfig} from './commands/config.js';
-import {setConvention, getConvention} from './utils/config-manager.js';
-import {showSuccess, showError} from './utils/ui.js';
+import {setConvention} from './utils/config-manager.js';
 
 const program = new Command();
 
