@@ -51,12 +51,16 @@ export class AIProvider {
 
 	/**
 	 * Generate commit message using GitHub Copilot
+	 * NOTE: This is a simplified implementation. A GitHub token alone cannot authenticate
+	 * with the OpenAI API. In production, this would either:
+	 * 1. Use the GitHub Copilot API endpoint (requires different authentication)
+	 * 2. Require users to have an OpenAI API key separately
+	 * 3. Use a proxy service that bridges GitHub auth to OpenAI
+	 * For now, this serves as a placeholder for the intended Copilot integration.
 	 */
 	async generateWithCopilot(prompt, options = {}) {
 		try {
-			// For now, we'll use a simple approach since full Copilot SDK integration
-			// requires OAuth flow which is complex for CLI
-			// We'll check for GitHub token in environment variables
+			// Check for GitHub token in environment variables or config
 			const token =
 				getToken('github') ||
 				process.env.COPILOT_GITHUB_TOKEN ||
@@ -69,33 +73,16 @@ export class AIProvider {
 				);
 			}
 
-			// Use OpenAI-compatible endpoint with GitHub token
-			// GitHub Copilot uses OpenAI models under the hood
-			const openai = new OpenAI({
-				apiKey: token,
-				baseURL: 'https://api.openai.com/v1', // Will use standard OpenAI for now
-			});
-
-			const model = this.model || options.model || 'gpt-4';
-
-			const response = await openai.chat.completions.create({
-				model,
-				messages: [
-					{
-						role: 'system',
-						content: 'You are an expert at writing git commit messages.',
-					},
-					{role: 'user', content: prompt},
-				],
-				temperature: 0.7,
-				maxTokens: 100,
-			});
-
-			return response.choices[0].message.content.trim();
+			// In a real implementation, this would use the Copilot API endpoint
+			// For now, if a GitHub token is provided, we fall back to OpenAI
+			// This allows the structure to be in place for future Copilot integration
+			throw new Error(
+				'GitHub Copilot integration pending - using OpenAI fallback',
+			);
 		} catch (error) {
 			// Fallback to OpenAI if available
 			if (getToken('openai')) {
-				console.warn('⚠️  Copilot failed, falling back to OpenAI...');
+				console.warn('⚠️  Copilot not fully implemented, using OpenAI...');
 				return this.generateWithOpenAI(prompt, options);
 			}
 
@@ -127,7 +114,7 @@ export class AIProvider {
 				{role: 'user', content: prompt},
 			],
 			temperature: 0.7,
-			maxTokens: 100,
+			max_tokens: 100, // eslint-disable-line camelcase
 		});
 
 		return response.choices[0].message.content.trim();
