@@ -23,15 +23,19 @@ export function setToken(provider, token) {
 	} else if (provider === 'openai') {
 		config.set('openai', token);
 	}
+
 	config.set('authenticatedAt', new Date().toISOString());
 }
 
 export function getToken(provider) {
 	if (provider === 'copilot' || provider === 'github') {
 		return config.get('githubToken');
-	} else if (provider === 'openai') {
+	}
+
+	if (provider === 'openai') {
 		return config.get('openai');
 	}
+
 	return null;
 }
 

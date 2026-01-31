@@ -13,9 +13,13 @@ export async function isGitRepository() {
 export async function isCommitterSet() {
 	try {
 		const {stdout: name} = await execa('git', ['config', '--get', 'user.name']);
-		const {stdout: email} = await execa('git', ['config', '--get', 'user.email']);
+		const {stdout: email} = await execa('git', [
+			'config',
+			'--get',
+			'user.email',
+		]);
 		return Boolean(name && email);
-	} catch (error) {
+	} catch {
 		return false;
 	}
 }
@@ -36,6 +40,7 @@ export async function getChangedFiles() {
 					// Untracked files
 					return parts.slice(1).join(' ');
 				}
+
 				// Modified/added files
 				return parts.slice(1).join(' ');
 			})
@@ -94,6 +99,7 @@ export async function getDiff(filePath = null) {
 		if (filePath) {
 			args.push('--', filePath);
 		}
+
 		const {stdout: diff} = await execa('git', args);
 		return diff;
 	} catch (error) {
@@ -118,6 +124,7 @@ export async function getStagedFiles() {
 		if (!stdout) {
 			return [];
 		}
+
 		return stdout.split('\n').filter(file => file !== '');
 	} catch (error) {
 		console.error('Error getting staged files:', error);

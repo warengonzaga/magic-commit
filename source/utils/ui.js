@@ -15,7 +15,11 @@ export function showBanner() {
 	});
 
 	console.log(chalk.magenta(banner));
-	console.log(chalk.cyan('  🪄 You can do magicc, you can build anything that you desire. 🔮\n'));
+	console.log(
+		chalk.cyan(
+			'  🪄 You can do magicc, you can build anything that you desire. 🔮\n',
+		),
+	);
 }
 
 export function showCommitPreview(message, filePath = null) {
@@ -24,6 +28,7 @@ export function showCommitPreview(message, filePath = null) {
 	if (filePath) {
 		console.log(chalk.gray(`   File: ${filePath}`));
 	}
+
 	console.log();
 }
 
@@ -94,8 +99,8 @@ export function showAuthStatus(config) {
 	console.log(chalk.cyan('\n🔐 Authentication Status'));
 	console.log('──────────────────────────────────────────────────');
 
-	const authMode = config.authMode;
-	const authenticatedAt = config.authenticatedAt;
+	const {authMode} = config;
+	const {authenticatedAt} = config;
 
 	if (authMode === 'copilot') {
 		console.log(chalk.green('✅ GitHub Copilot'));
@@ -103,6 +108,7 @@ export function showAuthStatus(config) {
 			const date = new Date(authenticatedAt);
 			console.log(chalk.gray(`   Authenticated: ${date.toLocaleString()}`));
 		}
+
 		console.log(chalk.gray('   Model: gpt-4 (default)'));
 	} else if (authMode === 'openai') {
 		console.log(chalk.green('✅ OpenAI (Legacy)'));
@@ -110,10 +116,13 @@ export function showAuthStatus(config) {
 			const date = new Date(authenticatedAt);
 			console.log(chalk.gray(`   Authenticated: ${date.toLocaleString()}`));
 		}
+
 		console.log(chalk.gray('   Model: gpt-4o-mini (default)'));
 	} else {
 		console.log(chalk.red('❌ Not authenticated'));
-		console.log(chalk.gray('   Run "magicc auth copilot" or "magicc auth openai <key>"'));
+		console.log(
+			chalk.gray('   Run "magicc auth copilot" or "magicc auth openai <key>"'),
+		);
 	}
 
 	console.log('──────────────────────────────────────────────────');

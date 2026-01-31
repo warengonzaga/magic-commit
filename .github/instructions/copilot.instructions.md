@@ -1,5 +1,5 @@
 ---
-applyTo: "**"
+applyTo: '**'
 ---
 
 # Clean Commit Workflow
@@ -17,17 +17,17 @@ Reference: https://github.com/wgtechlabs/clean-commit
 
 ## The 9 Types
 
-| Emoji | Type | What it covers |
-|:-----:|------|----------------|
-| 📦 | `new` | Adding new features, files, or capabilities |
-| 🔧 | `update` | Changing existing code, refactoring, improvements |
-| 🗑️ | `remove` | Removing code, files, features, or dependencies |
-| 🔒 | `security` | Security fixes, patches, vulnerability resolutions |
-| ⚙️ | `setup` | Project configs, CI/CD, tooling, build systems |
-| ☕ | `chore` | Maintenance tasks, dependency updates, housekeeping |
-| 🧪 | `test` | Adding, updating, or fixing tests |
-| 📖 | `docs` | Documentation changes and updates |
-| 🚀 | `release` | Version releases and release preparation |
+| Emoji | Type       | What it covers                                      |
+| :---: | ---------- | --------------------------------------------------- |
+|  📦   | `new`      | Adding new features, files, or capabilities         |
+|  🔧   | `update`   | Changing existing code, refactoring, improvements   |
+|  🗑️   | `remove`   | Removing code, files, features, or dependencies     |
+|  🔒   | `security` | Security fixes, patches, vulnerability resolutions  |
+|  ⚙️   | `setup`    | Project configs, CI/CD, tooling, build systems      |
+|  ☕   | `chore`    | Maintenance tasks, dependency updates, housekeeping |
+|  🧪   | `test`     | Adding, updating, or fixing tests                   |
+|  📖   | `docs`     | Documentation changes and updates                   |
+|  🚀   | `release`  | Version releases and release preparation            |
 
 ## Rules
 

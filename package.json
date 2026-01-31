@@ -63,7 +63,11 @@
 		}
 	},
 	"xo": {
-		"prettier": true
+		"prettier": true,
+		"rules": {
+			"unicorn/expiring-todo-comments": "off",
+			"unicorn/no-process-exit": "off"
+		}
 	},
 	"prettier": "@vdemedes/prettier-config",
 	"babel": {
