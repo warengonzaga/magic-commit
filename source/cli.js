@@ -12,6 +12,7 @@ import {
 } from './commands/auth.js';
 import {showConfig, resetConfig} from './commands/config.js';
 import {setConvention} from './utils/config-manager.js';
+import {CONVENTIONS} from './utils/commit-conventions.js';
 
 const program = new Command();
 
@@ -92,7 +93,7 @@ configCmd
 	.command('set-convention <type>')
 	.description('Set default commit convention')
 	.action(type => {
-		const validConventions = ['clean', 'conventional', 'gitmoji', 'simple'];
+		const validConventions = Object.keys(CONVENTIONS);
 		if (!validConventions.includes(type)) {
 			showError(`Invalid convention: ${type}`);
 			console.log(`Available: ${validConventions.join(', ')}`);

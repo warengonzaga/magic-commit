@@ -31,12 +31,8 @@ test('config manager stores and retrieves tokens', t => {
 	setToken('openai', 'sk-test-key');
 	t.is(getToken('openai'), 'sk-test-key');
 
-	setToken('github', 'ghp-test-token');
-	t.is(getToken('github'), 'ghp-test-token');
-
 	clearAll();
 	t.is(getToken('openai'), undefined);
-	t.is(getToken('github'), undefined);
 });
 
 test('config manager stores and retrieves convention', t => {

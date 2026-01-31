@@ -64,10 +64,13 @@ export class AIProvider {
 	 */
 	async generateWithCopilot(prompt, options = {}) {
 		let client;
+		let clientStarted = false;
+
 		try {
 			// Create and start the Copilot client
 			client = new CopilotClient();
 			await client.start();
+			clientStarted = true;
 
 			// Create session with model
 			const session = await client.createSession({
@@ -79,25 +82,30 @@ export class AIProvider {
 				prompt,
 			});
 
-			// Clean up
-			await client.stop();
+			// Extract the content from response, handling multiple possible shapes
+			let content = null;
 
-			// Extract the content from response
-			if (response?.data?.content) {
-				return response.data.content.trim();
+			if (typeof response === 'string') {
+				content = response;
+			} else {
+				content =
+					// Preserve original expected shape first
+					response?.data?.content ??
+					// Common OpenAI / chat-like shapes under data
+					response?.data?.choices?.[0]?.message?.content ??
+					response?.data?.choices?.[0]?.content ??
+					// Or directly on the response object
+					response?.choices?.[0]?.message?.content ??
+					response?.choices?.[0]?.content ??
+					response?.content;
+			}
+
+			if (typeof content === 'string' && content.trim()) {
+				return content.trim();
 			}
 
 			throw new Error('No response from Copilot');
 		} catch (error) {
-			// Clean up client if it was created
-			if (client) {
-				try {
-					await client.stop();
-				} catch {
-					// Ignore cleanup errors
-				}
-			}
-
 			console.error('Copilot error:', error.message);
 
 			// Fallback to OpenAI if available
@@ -114,6 +122,15 @@ export class AIProvider {
 					'3. GitHub CLI installed and in PATH\n\n' +
 					'Or set OpenAI key as fallback: magicc auth openai <key>',
 			);
+		} finally {
+			// Clean up client if it was started
+			if (client && clientStarted) {
+				try {
+					await client.stop();
+				} catch {
+					// Ignore cleanup errors
+				}
+			}
 		}
 	}
 

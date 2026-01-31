@@ -139,8 +139,11 @@ export async function processFilesInteractively(aiProvider, options = {}) {
 
 		let currentConvention = options.convention || getConvention();
 		let fileProcessed = false;
+		let attempts = 0;
+		const maxAttempts = 5;
 
-		while (!fileProcessed) {
+		while (!fileProcessed && attempts < maxAttempts) {
+			attempts++;
 			try {
 				const message = await aiProvider.generateCommitMessage(diff, file, {
 					...options,
@@ -187,6 +190,15 @@ export async function processFilesInteractively(aiProvider, options = {}) {
 				skipped++;
 				fileProcessed = true;
 			}
+		}
+
+		// Check if max attempts reached without processing
+		if (!fileProcessed && attempts >= maxAttempts) {
+			showWarning(
+				`Maximum regeneration attempts (${maxAttempts}) reached for ${file}`,
+			);
+			await unstageFile(file);
+			skipped++;
 		}
 	}
 

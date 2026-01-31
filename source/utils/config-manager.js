@@ -18,20 +18,13 @@ export function getAuthMode() {
 
 // Token management
 export function setToken(provider, token) {
-	if (provider === 'copilot' || provider === 'github') {
-		config.set('githubToken', token);
-	} else if (provider === 'openai') {
+	if (provider === 'openai') {
 		config.set('openai', token);
+		config.set('authenticatedAt', new Date().toISOString());
 	}
-
-	config.set('authenticatedAt', new Date().toISOString());
 }
 
 export function getToken(provider) {
-	if (provider === 'copilot' || provider === 'github') {
-		return config.get('githubToken');
-	}
-
 	if (provider === 'openai') {
 		return config.get('openai');
 	}
