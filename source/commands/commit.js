@@ -149,28 +149,37 @@ export async function processFilesInteractively(aiProvider, options = {}) {
 
 				const result = await confirmCommit(message, file, currentConvention);
 
-				// eslint-disable-next-line unicorn/prefer-switch
-				if (result.action === 'accept') {
-					const success = await commit(result.message);
-					if (success) {
-						showSuccess(`Committed: ${file}`);
-						console.log(`📝 ${result.message}`);
-						committed++;
-					} else {
-						showError(`Failed to commit ${file}`);
-						await unstageFile(file);
-						skipped++;
+				switch (result.action) {
+					case 'accept': {
+						const success = await commit(result.message);
+						if (success) {
+							showSuccess(`Committed: ${file}`);
+							console.log(`📝 ${result.message}`);
+							committed++;
+						} else {
+							showError(`Failed to commit ${file}`);
+							await unstageFile(file);
+							skipped++;
+						}
+
+						fileProcessed = true;
+						break;
 					}
 
-					fileProcessed = true;
-				} else if (result.action === 'regenerate') {
-					currentConvention = result.convention;
-					// Loop continues to regenerate
-				} else if (result.action === 'skip') {
-					showInfo(`Skipped: ${file}`);
-					await unstageFile(file);
-					skipped++;
-					fileProcessed = true;
+					case 'regenerate': {
+						currentConvention = result.convention;
+						// Loop continues to regenerate
+						break;
+					}
+
+					case 'skip': {
+						showInfo(`Skipped: ${file}`);
+						await unstageFile(file);
+						skipped++;
+						fileProcessed = true;
+						break;
+					}
+					// No default
 				}
 			} catch (error) {
 				showError(`Error processing ${file}: ${error.message}`);
@@ -188,9 +197,7 @@ export async function processFilesInteractively(aiProvider, options = {}) {
 	console.log(`   ⏭️  Skipped: ${skipped} file(s)`);
 	console.log('═'.repeat(50) + '\n');
 }
-/* eslint-enable no-await-in-loop */
 
-/* eslint-disable no-await-in-loop */
 export async function processFile(filePath, aiProvider, options = {}) {
 	showInfo(`Processing single file: ${filePath}`);
 	console.log('');
@@ -225,28 +232,31 @@ export async function processFile(filePath, aiProvider, options = {}) {
 
 			const result = await confirmCommit(message, filePath, currentConvention);
 
-			if (result.action === 'accept') {
-				const success = await commit(result.message);
-				if (success) {
-					showSuccess('Changes committed successfully!');
-					console.log(`📝 ${result.message}`);
-				} else {
-					showError('Failed to commit changes.');
+			switch (result.action) {
+				case 'accept': {
+					const success = await commit(result.message);
+					if (success) {
+						showSuccess('Changes committed successfully!');
+						console.log(`📝 ${result.message}`);
+					} else {
+						showError('Failed to commit changes.');
+					}
+
+					return;
 				}
 
-				return;
-			}
+				case 'regenerate': {
+					currentConvention = result.convention;
+					attempts++;
+					continue;
+				}
 
-			if (result.action === 'regenerate') {
-				currentConvention = result.convention;
-				attempts++;
-				continue;
-			}
-
-			if (result.action === 'skip') {
-				showInfo('Commit cancelled.');
-				await unstageFile(filePath);
-				return;
+				case 'skip': {
+					showInfo('Commit cancelled.');
+					await unstageFile(filePath);
+					return;
+				}
+				// No default
 			}
 		} catch (error) {
 			showError(`Error: ${error.message}`);
