@@ -1,4 +1,5 @@
 import Conf from 'conf';
+import {CONVENTIONS} from './commit-conventions.js';
 
 const config = new Conf({projectName: 'magicc'});
 
@@ -70,8 +71,17 @@ export function getUseGhCli() {
 
 // Convention management
 export function setConvention(convention = 'clean') {
-	// Store convention without validation here to avoid circular dependencies
-	// Validation happens at read time in config display and CLI commands
+	// Validate convention name
+	const validConventions = Object.keys(CONVENTIONS);
+	if (!validConventions.includes(convention)) {
+		console.warn(
+			`Warning: Invalid convention '${convention}'. Valid options: ${validConventions.join(
+				', ',
+			)}. Defaulting to 'clean'.`,
+		);
+		convention = 'clean';
+	}
+
 	config.set('convention', convention);
 }
 
