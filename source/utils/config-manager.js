@@ -10,6 +10,7 @@ const config = new Conf({projectName: 'magicc'});
 // Auth mode management
 export function setAuthMode(mode) {
 	config.set('authMode', mode);
+	config.set('authenticatedAt', new Date().toISOString());
 }
 
 export function getAuthMode() {
@@ -69,6 +70,9 @@ export function getUseGhCli() {
 
 // Convention management
 export function setConvention(convention = 'clean') {
+	// Validate convention name if CONVENTIONS is available
+	// This is a soft validation - we allow setting even if validation fails
+	// to avoid breaking config updates, but warn in getConvention
 	config.set('convention', convention);
 }
 

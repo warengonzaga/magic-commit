@@ -74,7 +74,7 @@ export class AIProvider {
 
 			// Create session with model
 			const session = await client.createSession({
-				model: this.model || options.model || 'gpt-4.1',
+				model: this.model || options.model || 'gpt-4o',
 			});
 
 			// Send the prompt and wait for response
@@ -83,13 +83,19 @@ export class AIProvider {
 			});
 
 			// Extract the content from response, handling multiple possible shapes
+			// The Copilot SDK response format can vary based on the model and session type.
+			// We check multiple common response structures to ensure compatibility:
+			// - Direct string responses
+			// - Nested under data.content (some SDK versions)
+			// - OpenAI-style choices array (fallback compatibility)
+			// - Direct content property on response object
 			let content = null;
 
 			if (typeof response === 'string') {
 				content = response;
 			} else {
 				content =
-					// Preserve original expected shape first
+					// Check data.content first (common in some SDK versions)
 					response?.data?.content ??
 					// Common OpenAI / chat-like shapes under data
 					response?.data?.choices?.[0]?.message?.content ??
@@ -115,12 +121,15 @@ export class AIProvider {
 			}
 
 			throw new Error(
-				`GitHub Copilot failed: ${error.message}\n\n` +
-					'Make sure you have:\n' +
-					'1. GitHub Copilot subscription\n' +
-					'2. Authenticated via: gh auth login\n' +
-					'3. GitHub CLI installed and in PATH\n\n' +
-					'Or set OpenAI key as fallback: magicc auth openai <key>',
+				`GitHub Copilot failed` +
+					(error.name ? ` (${error.name})` : '') +
+					`: ${error.message}\n\n` +
+					'This may be caused by:\n' +
+					'1. Missing GitHub Copilot subscription\n' +
+					'2. Not authenticated in GitHub CLI (try: gh auth login)\n' +
+					'3. Network issues or GitHub API availability problems\n' +
+					'4. Incompatible or outdated GitHub Copilot SDK or CLI version\n\n' +
+					'If the issue persists, set an OpenAI key as fallback: magicc auth openai <key>',
 			);
 		} finally {
 			// Clean up client if it was started

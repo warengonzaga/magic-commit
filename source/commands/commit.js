@@ -143,7 +143,6 @@ export async function processFilesInteractively(aiProvider, options = {}) {
 		const maxAttempts = 5;
 
 		while (!fileProcessed && attempts < maxAttempts) {
-			attempts++;
 			try {
 				const message = await aiProvider.generateCommitMessage(diff, file, {
 					...options,
@@ -171,6 +170,7 @@ export async function processFilesInteractively(aiProvider, options = {}) {
 
 					case 'regenerate': {
 						currentConvention = result.convention;
+						attempts++;
 						// Loop continues to regenerate
 						break;
 					}
