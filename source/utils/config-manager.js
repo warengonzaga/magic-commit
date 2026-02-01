@@ -74,10 +74,9 @@ export function setConvention(convention = 'clean') {
 	// Validate convention name
 	const validConventions = Object.keys(CONVENTIONS);
 	if (!validConventions.includes(convention)) {
+		const validOptions = validConventions.join(', ');
 		console.warn(
-			`Warning: Invalid convention '${convention}'. Valid options: ${validConventions.join(
-				', ',
-			)}. Defaulting to 'clean'.`,
+			`Warning: Invalid convention '${convention}'. Valid options: ${validOptions}. Defaulting to 'clean'.`,
 		);
 		convention = 'clean';
 	}
