@@ -70,9 +70,8 @@ export function getUseGhCli() {
 
 // Convention management
 export function setConvention(convention = 'clean') {
-	// Validate convention name if CONVENTIONS is available
-	// This is a soft validation - we allow setting even if validation fails
-	// to avoid breaking config updates, but warn in getConvention
+	// Store convention without validation here to avoid circular dependencies
+	// Validation happens at read time in config display and CLI commands
 	config.set('convention', convention);
 }
 
