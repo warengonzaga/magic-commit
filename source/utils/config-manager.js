@@ -1,4 +1,5 @@
 import Conf from 'conf';
+import {CONVENTIONS} from './commit-conventions.js';
 
 const config = new Conf({projectName: 'magicc'});
 
@@ -10,6 +11,7 @@ const config = new Conf({projectName: 'magicc'});
 // Auth mode management
 export function setAuthMode(mode) {
 	config.set('authMode', mode);
+	config.set('authenticatedAt', new Date().toISOString());
 }
 
 export function getAuthMode() {
@@ -18,20 +20,13 @@ export function getAuthMode() {
 
 // Token management
 export function setToken(provider, token) {
-	if (provider === 'copilot' || provider === 'github') {
-		config.set('githubToken', token);
-	} else if (provider === 'openai') {
+	if (provider === 'openai') {
 		config.set('openai', token);
+		config.set('authenticatedAt', new Date().toISOString());
 	}
-
-	config.set('authenticatedAt', new Date().toISOString());
 }
 
 export function getToken(provider) {
-	if (provider === 'copilot' || provider === 'github') {
-		return config.get('githubToken');
-	}
-
 	if (provider === 'openai') {
 		return config.get('openai');
 	}
@@ -72,4 +67,23 @@ export function setUseGhCli(value) {
 
 export function getUseGhCli() {
 	return config.get('useGhCli', false);
+}
+
+// Convention management
+export function setConvention(convention = 'clean') {
+	// Validate convention name
+	const validConventions = Object.keys(CONVENTIONS);
+	if (!validConventions.includes(convention)) {
+		const validOptions = validConventions.join(', ');
+		console.warn(
+			`Warning: Invalid convention '${convention}'. Valid options: ${validOptions}. Defaulting to 'clean'.`,
+		);
+		convention = 'clean';
+	}
+
+	config.set('convention', convention);
+}
+
+export function getConvention() {
+	return config.get('convention', 'clean'); // Default to 'clean'
 }

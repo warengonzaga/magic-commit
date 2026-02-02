@@ -17,7 +17,7 @@ import {
 	showInfo,
 	confirmCommit,
 } from '../utils/ui.js';
-import {getAuthMode} from '../utils/config-manager.js';
+import {getAuthMode, getConvention} from '../utils/config-manager.js';
 
 /**
  * Main commit command logic
@@ -137,35 +137,66 @@ export async function processFilesInteractively(aiProvider, options = {}) {
 			continue;
 		}
 
-		// Generate commit message
-		try {
-			const message = await aiProvider.generateCommitMessage(
-				diff,
-				file,
-				options,
-			);
+		let currentConvention = options.convention || getConvention();
+		let fileProcessed = false;
+		let attempts = 0;
+		const maxAttempts = 5;
 
-			// Confirm and commit
-			const result = await confirmCommit(message, file);
+		while (!fileProcessed && attempts < maxAttempts) {
+			try {
+				const message = await aiProvider.generateCommitMessage(diff, file, {
+					...options,
+					convention: currentConvention,
+				});
 
-			if (result.action === 'accept') {
-				const success = await commit(result.message);
-				if (success) {
-					showSuccess(`Committed: ${file}`);
-					console.log(`📝 ${result.message}`);
-					committed++;
-				} else {
-					showError(`Failed to commit ${file}`);
-					await unstageFile(file);
-					skipped++;
+				const result = await confirmCommit(message, file, currentConvention);
+
+				switch (result.action) {
+					case 'accept': {
+						const success = await commit(result.message);
+						if (success) {
+							showSuccess(`Committed: ${file}`);
+							console.log(`📝 ${result.message}`);
+							committed++;
+						} else {
+							showError(`Failed to commit ${file}`);
+							await unstageFile(file);
+							skipped++;
+						}
+
+						fileProcessed = true;
+						break;
+					}
+
+					case 'regenerate': {
+						currentConvention = result.convention;
+						attempts++;
+						// Loop continues to regenerate
+						break;
+					}
+
+					case 'skip': {
+						showInfo(`Skipped: ${file}`);
+						await unstageFile(file);
+						skipped++;
+						fileProcessed = true;
+						break;
+					}
+					// No default
 				}
-			} else if (result.action === 'skip') {
-				showInfo(`Skipped: ${file}`);
+			} catch (error) {
+				showError(`Error processing ${file}: ${error.message}`);
 				await unstageFile(file);
 				skipped++;
+				fileProcessed = true;
 			}
-		} catch (error) {
-			showError(`Error processing ${file}: ${error.message}`);
+		}
+
+		// Check if max attempts reached without processing
+		if (!fileProcessed && attempts >= maxAttempts) {
+			showWarning(
+				`Maximum regeneration attempts (${maxAttempts}) reached for ${file}`,
+			);
 			await unstageFile(file);
 			skipped++;
 		}
@@ -178,7 +209,6 @@ export async function processFilesInteractively(aiProvider, options = {}) {
 	console.log(`   ⏭️  Skipped: ${skipped} file(s)`);
 	console.log('═'.repeat(50) + '\n');
 }
-/* eslint-enable no-await-in-loop */
 
 export async function processFile(filePath, aiProvider, options = {}) {
 	showInfo(`Processing single file: ${filePath}`);
@@ -199,27 +229,55 @@ export async function processFile(filePath, aiProvider, options = {}) {
 		return;
 	}
 
-	// Generate commit message
-	showInfo('Generating commit message...');
-	const message = await aiProvider.generateCommitMessage(
-		diff,
-		filePath,
-		options,
-	);
+	let currentConvention = options.convention || getConvention();
+	let attempts = 0;
+	const maxAttempts = 5;
 
-	// Confirm and commit
-	const result = await confirmCommit(message, filePath);
+	while (attempts < maxAttempts) {
+		showInfo('Generating commit message...');
 
-	if (result.action === 'accept') {
-		const success = await commit(result.message);
-		if (success) {
-			showSuccess('Changes committed successfully!');
-			console.log(`📝 ${result.message}`);
-		} else {
-			showError('Failed to commit changes.');
+		try {
+			const message = await aiProvider.generateCommitMessage(diff, filePath, {
+				...options,
+				convention: currentConvention,
+			});
+
+			const result = await confirmCommit(message, filePath, currentConvention);
+
+			switch (result.action) {
+				case 'accept': {
+					const success = await commit(result.message);
+					if (success) {
+						showSuccess('Changes committed successfully!');
+						console.log(`📝 ${result.message}`);
+					} else {
+						showError('Failed to commit changes.');
+					}
+
+					return;
+				}
+
+				case 'regenerate': {
+					currentConvention = result.convention;
+					attempts++;
+					continue;
+				}
+
+				case 'skip': {
+					showInfo('Commit cancelled.');
+					await unstageFile(filePath);
+					return;
+				}
+				// No default
+			}
+		} catch (error) {
+			showError(`Error: ${error.message}`);
+			await unstageFile(filePath);
+			return;
 		}
-	} else if (result.action === 'skip') {
-		showInfo('Commit cancelled.');
-		await unstageFile(filePath);
 	}
+
+	showWarning('Maximum regeneration attempts reached.');
+	await unstageFile(filePath);
 }
+/* eslint-enable no-await-in-loop */

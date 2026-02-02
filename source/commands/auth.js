@@ -1,4 +1,5 @@
 import process from 'node:process';
+import {execa} from 'execa';
 import {
 	setAuthMode,
 	setToken,
@@ -18,46 +19,45 @@ import {
  * Handles GitHub Copilot and OpenAI authentication
  */
 
-export async function authenticateWithCopilot(token = null) {
+export async function authenticateWithCopilot() {
 	try {
-		// Check for token in arguments first
-		let authToken = token;
+		console.log('🔐 Setting up GitHub Copilot authentication...\n');
 
-		// If no token provided, check environment variables
-		if (!authToken) {
-			authToken =
-				process.env.COPILOT_GITHUB_TOKEN ||
-				process.env.GH_TOKEN ||
-				process.env.GITHUB_TOKEN;
-		}
-
-		if (!authToken) {
-			showError('No GitHub token found.');
+		// Check if gh CLI is installed
+		try {
+			await execa('gh', ['--version']);
+		} catch {
+			showError('GitHub CLI (gh) is not installed.');
 			console.log('');
-			console.log('Please provide a token using one of these methods:');
-			console.log('  1. Pass token: magicc auth copilot --token <your-token>');
-			console.log('  2. Set environment variable: GITHUB_TOKEN or GH_TOKEN');
-			console.log(
-				'  3. Use gh CLI: gh auth login (then use: magicc auth copilot)',
-			);
-			console.log('');
-			console.log('To create a token:');
-			console.log('  Visit: https://github.com/settings/tokens');
-			console.log('  Scopes needed: repo, read:user');
+			console.log('Install it from: https://cli.github.com/');
+			console.log('Then run: gh auth login');
 			process.exit(1);
 		}
 
-		// Store token and set auth mode
-		setToken('github', authToken);
+		// Check if gh is authenticated
+		try {
+			await execa('gh', ['auth', 'status']);
+		} catch {
+			showError('GitHub CLI is not authenticated.');
+			console.log('');
+			console.log('Please authenticate first:');
+			console.log('  gh auth login');
+			console.log('');
+			console.log('Make sure you have GitHub Copilot enabled on your account.');
+			process.exit(1);
+		}
+
+		// Store auth mode
 		setAuthMode('copilot');
 
-		showSuccess('GitHub Copilot authentication successful!');
+		showSuccess('GitHub Copilot ready!');
 		console.log('');
-		console.log(`📁 Config stored at: ${getConfigPath()}`);
+		console.log('✅ GitHub CLI authenticated');
+		console.log('✅ Copilot SDK will use your CLI session');
 		console.log('');
 		console.log('You can now use: magicc commit');
 	} catch (error) {
-		showError(`Authentication failed: ${error.message}`);
+		showError(`Setup failed: ${error.message}`);
 		process.exit(1);
 	}
 }

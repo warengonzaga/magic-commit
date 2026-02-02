@@ -5,6 +5,7 @@ import {
 	getConfigPath,
 } from '../utils/config-manager.js';
 import {showSuccess, showInfo} from '../utils/ui.js';
+import {getConvention, CONVENTIONS} from '../utils/commit-conventions.js';
 
 /**
  * Configuration commands
@@ -29,6 +30,16 @@ export function showConfig() {
 				value.length > 10
 			) {
 				displayValue = value.slice(0, 10) + '...';
+			}
+
+			// Show convention name nicely
+			if (key === 'convention') {
+				const conv = getConvention(value);
+				// Check if the stored value matches a valid convention
+				const validConventions = Object.keys(CONVENTIONS);
+				displayValue = validConventions.includes(value)
+					? `${value} (${conv.name})`
+					: `${value} (invalid - defaults to ${conv.name})`;
 			}
 
 			console.log(`  ${chalk.yellow(key)}: ${chalk.white(displayValue)}`);

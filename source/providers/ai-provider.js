@@ -1,6 +1,11 @@
-import process from 'node:process';
+import {CopilotClient} from '@github/copilot-sdk';
 import OpenAI from 'openai';
-import {getAuthMode, getToken} from '../utils/config-manager.js';
+import {
+	getAuthMode,
+	getToken,
+	getConvention as getConventionName,
+} from '../utils/config-manager.js';
+import {getConvention} from '../utils/commit-conventions.js';
 
 /**
  * AI Provider abstraction layer
@@ -29,7 +34,12 @@ export class AIProvider {
 			return this.generateFallbackMessage(filePath);
 		}
 
-		const prompt = this.buildCleanCommitPrompt(diff, filePath);
+		// Get the convention (from options, config, or default to 'clean')
+		const conventionName = options.convention || getConventionName() || 'clean';
+		const convention = getConvention(conventionName);
+
+		// Build prompt using the selected convention
+		const prompt = convention.buildPrompt(diff, filePath);
 
 		try {
 			if (this.authMode === 'copilot') {
@@ -51,42 +61,85 @@ export class AIProvider {
 
 	/**
 	 * Generate commit message using GitHub Copilot
-	 * NOTE: This is a simplified implementation. A GitHub token alone cannot authenticate
-	 * with the OpenAI API. In production, this would either:
-	 * 1. Use the GitHub Copilot API endpoint (requires different authentication)
-	 * 2. Require users to have an OpenAI API key separately
-	 * 3. Use a proxy service that bridges GitHub auth to OpenAI
-	 * For now, this serves as a placeholder for the intended Copilot integration.
 	 */
 	async generateWithCopilot(prompt, options = {}) {
-		try {
-			// Check for GitHub token in environment variables or config
-			const token =
-				getToken('github') ||
-				process.env.COPILOT_GITHUB_TOKEN ||
-				process.env.GH_TOKEN ||
-				process.env.GITHUB_TOKEN;
+		let client;
+		let clientStarted = false;
 
-			if (!token) {
-				throw new Error(
-					'GitHub token not found. Please authenticate with "magicc auth copilot"',
-				);
+		try {
+			// Create and start the Copilot client
+			client = new CopilotClient();
+			await client.start();
+			clientStarted = true;
+
+			// Create session with model
+			const session = await client.createSession({
+				model: this.model || options.model || 'gpt-4o',
+			});
+
+			// Send the prompt and wait for response
+			const response = await session.sendAndWait({
+				prompt,
+			});
+
+			// Extract the content from response, handling multiple possible shapes
+			// The Copilot SDK response format can vary based on the model and session type.
+			// We check multiple common response structures to ensure compatibility:
+			// - Direct string responses
+			// - Nested under data.content (some SDK versions)
+			// - OpenAI-style choices array (fallback compatibility)
+			// - Direct content property on response object
+			let content = null;
+
+			if (typeof response === 'string') {
+				content = response;
+			} else {
+				content =
+					// Check data.content first (common in some SDK versions)
+					response?.data?.content ??
+					// Common OpenAI / chat-like shapes under data
+					response?.data?.choices?.[0]?.message?.content ??
+					response?.data?.choices?.[0]?.content ??
+					// Or directly on the response object
+					response?.choices?.[0]?.message?.content ??
+					response?.choices?.[0]?.content ??
+					response?.content;
 			}
 
-			// In a real implementation, this would use the Copilot API endpoint
-			// For now, if a GitHub token is provided, we fall back to OpenAI
-			// This allows the structure to be in place for future Copilot integration
-			throw new Error(
-				'GitHub Copilot integration pending - using OpenAI fallback',
-			);
+			if (typeof content === 'string' && content.trim()) {
+				return content.trim();
+			}
+
+			throw new Error('No response from Copilot');
 		} catch (error) {
+			console.error('Copilot error:', error.message);
+
 			// Fallback to OpenAI if available
 			if (getToken('openai')) {
-				console.warn('⚠️  Copilot not fully implemented, using OpenAI...');
+				console.warn('⚠️  Copilot failed, using OpenAI fallback...');
 				return this.generateWithOpenAI(prompt, options);
 			}
 
-			throw error;
+			throw new Error(
+				`GitHub Copilot failed` +
+					(error.name ? ` (${error.name})` : '') +
+					`: ${error.message}\n\n` +
+					'This may be caused by:\n' +
+					'1. Missing GitHub Copilot subscription\n' +
+					'2. Not authenticated in GitHub CLI (try: gh auth login)\n' +
+					'3. Network issues or GitHub API availability problems\n' +
+					'4. Incompatible or outdated GitHub Copilot SDK or CLI version\n\n' +
+					'If the issue persists, set an OpenAI key as fallback: magicc auth openai <key>',
+			);
+		} finally {
+			// Clean up client if it was started
+			if (client && clientStarted) {
+				try {
+					await client.stop();
+				} catch {
+					// Ignore cleanup errors
+				}
+			}
 		}
 	}
 
@@ -118,45 +171,6 @@ export class AIProvider {
 		});
 
 		return response.choices[0].message.content.trim();
-	}
-
-	/**
-	 * Build Clean Commit format prompt
-	 */
-	buildCleanCommitPrompt(diff, filePath = null) {
-		return `You are an expert at writing git commit messages following the "Clean Commit" format.
-
-**Clean Commit Format:**
-<emoji> <type>: <description>
-<emoji> <type> (<scope>): <description>
-
-**The 9 Types:**
-| Emoji | Type      | What it covers |
-|-------|-----------|----------------|
-| 📦    | new       | Adding new features, files, or capabilities |
-| 🔧    | update    | Changing existing code, refactoring, improvements |
-| 🗑️    | remove    | Removing code, files, features, or dependencies |
-| 🔒    | security  | Security fixes, patches, vulnerability resolutions |
-| ⚙️    | setup     | Project configs, CI/CD, tooling, build systems |
-| ☕    | chore     | Maintenance tasks, dependency updates, housekeeping |
-| 🧪    | test      | Adding, updating, or fixing tests |
-| 📖    | docs      | Documentation changes and updates |
-| 🚀    | release   | Version releases and release preparation |
-
-**Rules:**
-- Use lowercase for type
-- Use present tense ("add" not "added")
-- No period at the end
-- Keep description under 72 characters
-- Include scope (filename) if appropriate
-
-**Git Diff:**
-\`\`\`diff
-${diff}
-\`\`\`
-
-${filePath ? `**File:** ${filePath}\n` : ''}
-Generate a single commit message following Clean Commit format. Return ONLY the commit message, nothing else.`;
 	}
 
 	/**
