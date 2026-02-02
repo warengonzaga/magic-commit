@@ -1,6 +1,6 @@
 {
 	"name": "magicc",
-	"version": "0.2.6",
+	"version": "0.3.0",
 	"author": "Waren Gonzaga",
 	"description": "You can do `magicc`, you can build anything that you desire.",
 	"keywords": [
@@ -38,54 +38,39 @@
 		"dist"
 	],
 	"dependencies": {
+		"@github/copilot-sdk": "^0.1.20",
+		"chalk": "^5.3.0",
+		"commander": "^12.0.0",
 		"conf": "^12.0.0",
 		"dotenv": "^16.5.0",
 		"execa": "^8.0.1",
-		"ink": "^5.2.1",
-		"ink-big-text": "^2.0.0",
-		"ink-gradient": "^3.0.0",
-		"ink-select-input": "^6.2.0",
+		"figlet": "^1.7.0",
+		"inquirer": "^9.2.0",
 		"is-git-repository": "^2.0.0",
-		"meow": "^11.0.0",
-		"openai": "^4.104.0",
-		"react": "^18.2.0",
-		"readline": "^1.3.0"
+		"openai": "^4.104.0"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.21.0",
-		"@babel/preset-react": "^7.18.6",
 		"@vdemedes/prettier-config": "^2.0.1",
 		"ava": "^5.2.0",
 		"babel-plugin-inline-json-import": "^0.3.2",
-		"chalk": "^5.2.0",
-		"eslint-config-xo-react": "^0.27.0",
-		"eslint-plugin-react": "^7.32.2",
-		"eslint-plugin-react-hooks": "^4.6.0",
-		"import-jsx": "^5.0.0",
-		"ink-testing-library": "^3.0.0",
 		"prettier": "^2.8.7",
 		"xo": "^0.53.1"
 	},
 	"ava": {
 		"environmentVariables": {
 			"NODE_NO_WARNINGS": "1"
-		},
-		"nodeArguments": [
-			"--loader=import-jsx"
-		]
+		}
 	},
 	"xo": {
-		"extends": "xo-react",
 		"prettier": true,
 		"rules": {
-			"react/prop-types": "off"
+			"unicorn/expiring-todo-comments": "off",
+			"unicorn/no-process-exit": "off"
 		}
 	},
 	"prettier": "@vdemedes/prettier-config",
 	"babel": {
-		"presets": [
-			"@babel/preset-react"
-		],
 		"plugins": [
 			"inline-json-import"
 		]

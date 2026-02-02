@@ -61,12 +61,12 @@ This project is inspired by the following projects:
 - [aicommits](https://github.com/Nutlope/aicommits) - A CLI that writes your git commit messages for you with AI.
 - [ai-commit](https://github.com/insulineru/ai-commit) - Make commits easier with ChatGPT, Gitmoji and Conventional Commits.
 - [opencommit](https://github.com/di-sukharev/opencommit) - About
-Auto-generate impressive commits with AI in 1 second.
+  Auto-generate impressive commits with AI in 1 second.
 - [tgpt](https://github.com/aandrew-me/tgpt) - AI Chatbots in terminal without needing API keys.
 
 ## ⚙️ Project Activity
 
-![activity](https://repobeats.axiom.co/api/embed/b89d4c52ac63656f8148143516edd0db0d85788d.svg "Repobeats analytics image")
+![activity](https://repobeats.axiom.co/api/embed/b89d4c52ac63656f8148143516edd0db0d85788d.svg 'Repobeats analytics image')
 
 ## 🎯 Contributing
 

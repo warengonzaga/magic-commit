@@ -1,0 +1,186 @@
+import {CopilotClient} from '@github/copilot-sdk';
+import OpenAI from 'openai';
+import {
+	getAuthMode,
+	getToken,
+	getConvention as getConventionName,
+} from '../utils/config-manager.js';
+import {getConvention} from '../utils/commit-conventions.js';
+
+/**
+ * AI Provider abstraction layer
+ * Supports GitHub Copilot (primary) and OpenAI (legacy fallback)
+ */
+
+const MAX_DIFF_SIZE = 4000;
+
+export class AIProvider {
+	constructor(options = {}) {
+		this.authMode = options.authMode || getAuthMode();
+		this.model = options.model;
+	}
+
+	/**
+	 * Generate commit message using configured AI provider
+	 */
+	async generateCommitMessage(diff, filePath = null, options = {}) {
+		if (!diff || diff.trim() === '') {
+			throw new Error('No changes to generate commit message');
+		}
+
+		// Check diff size
+		if (diff.length > MAX_DIFF_SIZE) {
+			console.warn('⚠️  Diff content is large, using summary approach...');
+			return this.generateFallbackMessage(filePath);
+		}
+
+		// Get the convention (from options, config, or default to 'clean')
+		const conventionName = options.convention || getConventionName() || 'clean';
+		const convention = getConvention(conventionName);
+
+		// Build prompt using the selected convention
+		const prompt = convention.buildPrompt(diff, filePath);
+
+		try {
+			if (this.authMode === 'copilot') {
+				return await this.generateWithCopilot(prompt, options);
+			}
+
+			if (this.authMode === 'openai') {
+				return await this.generateWithOpenAI(prompt, options);
+			}
+
+			throw new Error(
+				'No authentication mode configured. Please run "magicc auth copilot" or "magicc auth openai <key>"',
+			);
+		} catch (error) {
+			console.error('Error generating commit message:', error.message);
+			throw error;
+		}
+	}
+
+	/**
+	 * Generate commit message using GitHub Copilot
+	 */
+	async generateWithCopilot(prompt, options = {}) {
+		let client;
+		let clientStarted = false;
+
+		try {
+			// Create and start the Copilot client
+			client = new CopilotClient();
+			await client.start();
+			clientStarted = true;
+
+			// Create session with model
+			const session = await client.createSession({
+				model: this.model || options.model || 'gpt-4o',
+			});
+
+			// Send the prompt and wait for response
+			const response = await session.sendAndWait({
+				prompt,
+			});
+
+			// Extract the content from response, handling multiple possible shapes
+			// The Copilot SDK response format can vary based on the model and session type.
+			// We check multiple common response structures to ensure compatibility:
+			// - Direct string responses
+			// - Nested under data.content (some SDK versions)
+			// - OpenAI-style choices array (fallback compatibility)
+			// - Direct content property on response object
+			let content = null;
+
+			if (typeof response === 'string') {
+				content = response;
+			} else {
+				content =
+					// Check data.content first (common in some SDK versions)
+					response?.data?.content ??
+					// Common OpenAI / chat-like shapes under data
+					response?.data?.choices?.[0]?.message?.content ??
+					response?.data?.choices?.[0]?.content ??
+					// Or directly on the response object
+					response?.choices?.[0]?.message?.content ??
+					response?.choices?.[0]?.content ??
+					response?.content;
+			}
+
+			if (typeof content === 'string' && content.trim()) {
+				return content.trim();
+			}
+
+			throw new Error('No response from Copilot');
+		} catch (error) {
+			console.error('Copilot error:', error.message);
+
+			// Fallback to OpenAI if available
+			if (getToken('openai')) {
+				console.warn('⚠️  Copilot failed, using OpenAI fallback...');
+				return this.generateWithOpenAI(prompt, options);
+			}
+
+			throw new Error(
+				`GitHub Copilot failed` +
+					(error.name ? ` (${error.name})` : '') +
+					`: ${error.message}\n\n` +
+					'This may be caused by:\n' +
+					'1. Missing GitHub Copilot subscription\n' +
+					'2. Not authenticated in GitHub CLI (try: gh auth login)\n' +
+					'3. Network issues or GitHub API availability problems\n' +
+					'4. Incompatible or outdated GitHub Copilot SDK or CLI version\n\n' +
+					'If the issue persists, set an OpenAI key as fallback: magicc auth openai <key>',
+			);
+		} finally {
+			// Clean up client if it was started
+			if (client && clientStarted) {
+				try {
+					await client.stop();
+				} catch {
+					// Ignore cleanup errors
+				}
+			}
+		}
+	}
+
+	/**
+	 * Generate commit message using OpenAI (legacy)
+	 */
+	async generateWithOpenAI(prompt, options = {}) {
+		const apiKey = getToken('openai');
+		if (!apiKey) {
+			throw new Error(
+				'OpenAI API key not found. Please run "magicc auth openai <key>"',
+			);
+		}
+
+		const openai = new OpenAI({apiKey});
+		const model = this.model || options.model || 'gpt-4o-mini';
+
+		const response = await openai.chat.completions.create({
+			model,
+			messages: [
+				{
+					role: 'system',
+					content: 'You are an expert at writing git commit messages.',
+				},
+				{role: 'user', content: prompt},
+			],
+			temperature: 0.7,
+			max_tokens: 100, // eslint-disable-line camelcase
+		});
+
+		return response.choices[0].message.content.trim();
+	}
+
+	/**
+	 * Fallback message for large diffs
+	 */
+	generateFallbackMessage(filePath) {
+		if (filePath) {
+			return `🔧 update (${filePath}): update ${filePath}`;
+		}
+
+		return '🔧 update: update files';
+	}
+}
